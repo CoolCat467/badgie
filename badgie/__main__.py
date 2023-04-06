@@ -10,7 +10,6 @@ from .badges.gitlab import (  # , GitLabCICoverageBadge, GitLabCILatestReleaseBa
     GitLabCIPipelinesBadge,
 )
 from .badges.precommit import PreCommitBadge
-from .models import Project
 
 PATTERN = r"BADGIE\s+TIME"
 PATTERN_START = r"<!--\s+" + PATTERN + r"\s+-->"
@@ -70,7 +69,7 @@ def parse_text(text: str, badge_text: str = ""):
             if not in_block:
                 while token.type != "END":
                     token = tokens.pop(0)
-                output += f"\n{badge_text}\n"
+                output += f"\n\n{badge_text}\n\n"
                 output += token.value
 
         # added this only to support documenting the feature
