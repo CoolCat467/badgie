@@ -1,48 +1,23 @@
 import argparse
+import logging
 import os
-import random
 import re
-import string
 import subprocess
-from typing import NamedTuple
+from pathlib import Path
+from typing import Type
 
+from .badges._base import Badge
 from .badges.gitlab import (  # , GitLabCICoverageBadge, GitLabCILatestReleaseBadge
-    GitLabCIPipelinesBadge,
+    GitLabPipelineStatusBadge,
 )
 from .badges.precommit import PreCommitBadge
-
-PATTERN = r"BADGIE\s+TIME"
-PATTERN_START = r"<!--\s+" + PATTERN + r"\s+-->"
-PATTERN_END = r"<!--\s+END\s+" + PATTERN + r"\s+-->"
-
-PATTERN_GIT_SSH = r"^(?P<user>git)@(?P<host>.*?):(?P<path>.*?)\.git$"
+from .constants import PATTERN_GIT_SSH
+from .models import Project
+from .parser import parse_text
 
 RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)
 
-
-class Token(NamedTuple):
-    type: str
-    value: str
-    line: int
-    column: int
-
-
-def tokenize(text: str):
-    token_specification = [
-        ("BLOCK", r"```"),
-        ("START", PATTERN_START),
-        ("END", PATTERN_END),
-        ("TEXT", r"."),
-        ("NEWLINE", r"\n"),
-    ]
-    tok_regex = "|".join("(?P<%s>%s)" % pair for pair in token_specification)
-    line_num = 1
-    line_start = 0
-    for mo in re.finditer(tok_regex, text):
-        kind = mo.lastgroup
-        value = mo.group()
-        column = mo.start() - line_start
-        yield Token(kind, value, line_num, column)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def render_badge(title: str, badge: str, link: str):
@@ -53,35 +28,19 @@ def get_badge_text(badges, format="markdown"):
     return "\n".join(getattr(badge, f"get_{format}")() for badge in badges)
 
 
-def randomword(length):
-    letters = string.ascii_lowercase
-    return "".join(random.choice(letters) for i in range(length))
+def get_badge_from_files(badge_class: Type[Badge], project: Project):
+    try:
+        files = getattr(badge_class, "files")
+    except AttributeError:
+        files = ()
 
-
-def parse_text(text: str, badge_text: str = ""):
-    tokens = list(tokenize(text))
-    output = ""
-    in_block = False
-    while tokens:
-        token = tokens.pop(0)
-        if token.type == "START":
-            output += token.value
-            if not in_block:
-                while token.type != "END":
-                    token = tokens.pop(0)
-                output += f"\n\n{badge_text}\n\n"
-                output += token.value
-
-        # added this only to support documenting the feature
-        elif token.type == "BLOCK":
-            output += token.value
-            in_block = not in_block
-
-        elif token.type == "NEWLINE":
-            output += "\n"
-        else:
-            output += token.value
-    return output
+    for file in files:
+        found = list(project.path.glob(file))
+        if found:
+            return badge_class(
+                project_url=project.url,
+                project_ref=project.ref,
+            )
 
 
 def main():
@@ -114,8 +73,8 @@ def main():
                     file_path=ci_config_path, ref=glproject.default_branch
                 )
                 badges.append(
-                    GitLabCIPipelinesBadge(
-                        project_url=glproject.path_with_namespace,
+                    GitLabPipelineStatusBadge(
+                        project_url=glproject.web_url,
                         project_ref=glproject.default_branch,
                     )
                 )
@@ -123,20 +82,17 @@ def main():
                 # no CI config
                 pass
 
-            pre_commit_config_path = ".pre-commit-config.yaml"
-            try:
-                pre_commit_config = glproject.files.get(
-                    file_path=pre_commit_config_path, ref=glproject.default_branch
-                )
-                badges.append(
-                    PreCommitBadge(
-                        project_url=glproject.path_with_namespace,
-                        project_ref=glproject.default_branch,
-                    )
-                )
-            except gitlab.exceptions.GitlabGetError:
-                # no CI config
-                pass
+            project = Project(
+                path=Path.cwd(),
+                url=glproject.web_url,
+                ref=glproject.default_branch,
+            )
+
+            new_badge = get_badge_from_files(
+                badge_class=PreCommitBadge, project=project
+            )
+            if new_badge is not None:
+                badges.append(new_badge)
 
     badge_text = get_badge_text(badges)
     output = parse_text(text, badge_text=badge_text)
