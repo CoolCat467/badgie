@@ -3,6 +3,7 @@
 <!-- BADGIE TIME -->
 
 [![brettops tool](https://img.shields.io/badge/brettops-tool-209cdf?labelColor=162d50)](https://brettops.io)
+[![pipeline status](https://gitlab.com/brettops/tools/badgie/badges/main/pipeline.svg)](https://gitlab.com/brettops/tools/badgie/-/commits/main)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 <!-- END BADGIE TIME -->
@@ -14,6 +15,27 @@ Add all the badges with Badgie!
 **Badgie is experimental and should not be used by anyone ever!**
 
 ---
+
+## tl;dr
+
+Install Badgie:
+
+```bash
+pip install badgie
+```
+
+Add Badgie tags:
+
+```md
+<!-- BADGIE TIME -->
+<!-- END BADGIE TIME -->
+```
+
+Run Badgie:
+
+```bash
+badgie -w README.md
+```
 
 ## Why Badgie
 
