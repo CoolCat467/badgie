@@ -7,3 +7,9 @@ class Project:
     path: Path
     url: str
     ref: str
+
+
+@dataclass(frozen=True)
+class Remote:
+    name: str
+    prefix: str

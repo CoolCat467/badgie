@@ -4,39 +4,23 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Type
 
-from .badges._base import Badge
-from .badges.gitlab import (  # , GitLabCICoverageBadge, GitLabCILatestReleaseBadge
-    GitLabPipelineStatusBadge,
-)
+from .badges.brettops import BrettOpsBadge
+from .badges.gitlab import GitLabCoverageReportBadge  # GitLabCILatestReleaseBadge
+from .badges.gitlab import GitLabPipelineStatusBadge
 from .badges.precommit import PreCommitBadge
 from .constants import PATTERN_GIT_SSH
 from .models import Project
 from .parser import parse_text
+from .sources import get_badge_from_files, get_badge_from_remotes
 
 RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def get_badge_text(badges, format="markdown"):
     return "\n".join(getattr(badge, f"get_{format}")() for badge in badges)
-
-
-def get_badge_from_files(badge_class: Type[Badge], project: Project):
-    try:
-        files = getattr(badge_class, "files")
-    except AttributeError:
-        files = ()
-
-    for file in files:
-        found = list(project.path.glob(file))
-        if found:
-            return badge_class(
-                project_url=project.url,
-                project_ref=project.ref,
-            )
 
 
 def main():
@@ -65,11 +49,33 @@ def main():
                 ref=glproject.default_branch,
             )
 
-            new_badge = get_badge_from_files(
-                badge_class=GitLabPipelineStatusBadge, project=project
+            new_badge = get_badge_from_remotes(
+                badge_class=BrettOpsBadge, project=project
             )
             if new_badge is not None:
                 badges.append(new_badge)
+
+            try:
+                glpipeline = glproject.pipelines.get(
+                    "latest", ref=glproject.default_branch
+                )
+            except gitlab.exceptions.GitlabGetError:
+                glpipeline = None
+
+            if glpipeline is not None:
+                badges.append(
+                    GitLabPipelineStatusBadge(
+                        project_url=project.url,
+                        project_ref=project.ref,
+                    )
+                )
+                if glpipeline.coverage is not None:
+                    badges.append(
+                        GitLabCoverageReportBadge(
+                            project_url=project.url,
+                            project_ref=project.ref,
+                        )
+                    )
 
             new_badge = get_badge_from_files(
                 badge_class=PreCommitBadge, project=project

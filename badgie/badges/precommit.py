@@ -1,6 +1,7 @@
 from ._base import Badge, register_badge
 
 
+@register_badge
 class PreCommitBadge(Badge):
     name = "pre-commit-enabled"
 
@@ -14,6 +15,3 @@ class PreCommitBadge(Badge):
 
     def get_link_url(self):
         return f"https://github.com/pre-commit/pre-commit"
-
-
-register_badge(PreCommitBadge)
