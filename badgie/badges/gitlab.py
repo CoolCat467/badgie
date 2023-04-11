@@ -6,6 +6,8 @@ class GitLabPipelineStatusBadge(Badge):
 
     link_title = "pipeline status"
 
+    files = (".gitlab-ci.yml",)
+
     def get_badge_image_url(self):
         return f"{self.project_url}/badges/{self.project_ref}/pipeline.svg"
 

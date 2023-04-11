@@ -20,10 +20,6 @@ RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def render_badge(title: str, badge: str, link: str):
-    pass
-
-
 def get_badge_text(badges, format="markdown"):
     return "\n".join(getattr(badge, f"get_{format}")() for badge in badges)
 
@@ -63,30 +59,17 @@ def main():
             )
             glproject = gl.projects.get(match.group("path"))
 
-            ci_config_path = (
-                glproject.ci_config_path
-                if glproject.ci_config_path
-                else ".gitlab-ci.yml"
-            )
-            try:
-                ci_config = glproject.files.get(
-                    file_path=ci_config_path, ref=glproject.default_branch
-                )
-                badges.append(
-                    GitLabPipelineStatusBadge(
-                        project_url=glproject.web_url,
-                        project_ref=glproject.default_branch,
-                    )
-                )
-            except gitlab.exceptions.GitlabGetError:
-                # no CI config
-                pass
-
             project = Project(
                 path=Path.cwd(),
                 url=glproject.web_url,
                 ref=glproject.default_branch,
             )
+
+            new_badge = get_badge_from_files(
+                badge_class=GitLabPipelineStatusBadge, project=project
+            )
+            if new_badge is not None:
+                badges.append(new_badge)
 
             new_badge = get_badge_from_files(
                 badge_class=PreCommitBadge, project=project
