@@ -34,6 +34,12 @@ repos:
     hooks:
       - id: prettier
 
+  - repo: https://github.com/jazzband/pip-tools
+    rev: "6.13.0"
+    hooks:
+      - id: pip-compile
+        args: ["--no-emit-index-url", "--upgrade"]
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: "v1.4.0"
     hooks:

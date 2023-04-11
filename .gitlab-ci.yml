@@ -1,0 +1,19 @@
+stages:
+  - test
+  - build
+  - deploy
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - when: always
+
+include:
+  - project: brettops/pipelines/prettier
+    file: include.yml
+  - project: brettops/pipelines/python
+    file: package.yml
+
+variables:
+  PYTHON_PACKAGE_DIR: badgie
