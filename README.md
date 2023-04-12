@@ -110,11 +110,6 @@ And enjoy magic badges:
 <!-- END BADGIE TIME -->
 ```
 
-## Configuring Badgie
-
-When Badgie can't auto-determine a value, or when doing so _really_ doesn't make
-sense, Badgie can be configured to do something else.
-
 ## Caveats
 
 Badgie makes decisions on the assumption that you do sensible things with your
