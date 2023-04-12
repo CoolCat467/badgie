@@ -13,7 +13,11 @@ include:
   - project: brettops/pipelines/prettier
     file: include.yml
   - project: brettops/pipelines/python
-    file: package.yml
+    file: lint.yml
+  - project: brettops/pipelines/python
+    file: setuptools.yml
+  - project: brettops/pipelines/python
+    file: twine.yml
 
 variables:
   PYTHON_PACKAGE_DIR: badgie
