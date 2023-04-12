@@ -5,6 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from ._version import __version__
 from .badges.brettops import BrettOpsBadge
 from .badges.gitlab import GitLabCoverageReportBadge  # GitLabCILatestReleaseBadge
 from .badges.gitlab import GitLabPipelineStatusBadge
@@ -27,6 +28,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input")
     parser.add_argument("-w", "--write", action="store_true")
+    parser.add_argument(
+        "-V", "--version", action="version", version=f"%(prog)s {__version__}"
+    )
     args = parser.parse_args()
 
     text = open(args.input, "r").read()
