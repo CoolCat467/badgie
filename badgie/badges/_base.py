@@ -2,13 +2,12 @@ import logging
 from dataclasses import dataclass
 from typing import Optional
 
-from ..models import Remote
+from ..models import Project, Remote
 
 
 @dataclass(frozen=True)
 class Badge:
-    project_url: str
-    project_ref: str
+    project: Project
     remote: Optional[Remote] = None
 
     def __post_init__(self):
@@ -24,7 +23,7 @@ class Badge:
             return ""
 
     def get_link_url(self):
-        return self.project_url
+        return self.project.url
 
     def get_markdown(self):
         return f"[![{self.get_link_title()}]({self.get_badge_image_url()})]({self.get_link_url()})"

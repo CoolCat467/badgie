@@ -4,9 +4,14 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class Project:
-    path: Path
+    local_path: Path
     url: str
     ref: str
+    name: str
+    namespace: str
+    path: str
+    full_name: str
+    full_path: str
 
 
 @dataclass(frozen=True)

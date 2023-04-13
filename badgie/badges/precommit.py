@@ -4,7 +4,6 @@ from ._base import Badge, register_badge
 @register_badge
 class PreCommitBadge(Badge):
     name = "pre-commit-enabled"
-
     link_title = "pre-commit"
 
     # Path.glob matching
