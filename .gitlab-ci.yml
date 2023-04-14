@@ -10,11 +10,6 @@ workflow:
     - when: always
 
 include:
-  # - project: brettops/pipelines/mkdocs
-  #   file: include.yml
-  # - project: brettops/pipelines/pages
-  #   file: include.yml
-
   - project: brettops/pipelines/prettier
     file: include.yml
 

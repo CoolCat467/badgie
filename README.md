@@ -114,5 +114,5 @@ And enjoy magic badges:
 ## Caveats
 
 Badgie makes decisions on the assumption that you do sensible things with your
-repository structure. It does not try to work around bad practices and MRs that
+repository structure. It does not try to work around bad practices. MRs that
 encourage this will be rejected.

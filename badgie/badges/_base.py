@@ -1,6 +1,8 @@
-import logging
+import sys
 from dataclasses import dataclass
 from typing import Optional
+
+from termcolor import colored
 
 from ..models import Project, Remote
 
@@ -11,7 +13,14 @@ class Badge:
     remote: Optional[Remote] = None
 
     def __post_init__(self):
-        logging.info("add %s", self.__class__.name)
+        print(
+            colored(
+                "- adding a {name} badge".format(
+                    name=colored(self.__class__.name, "blue", attrs=["bold"])
+                )
+            ),
+            file=sys.stderr,
+        )
 
     def get_badge_image_url(self):
         raise NotImplementedError

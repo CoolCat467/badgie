@@ -13,10 +13,10 @@ API_V4_URL = f"{GITLAB_URL}/api/v4"
 
 gl = gitlab.Gitlab(private_token=os.environ.get("GITLAB_PRIVATE_TOKEN", None))
 
-HEADERS = {}
+HEADERS: dict[str, str] = {}
 private_token = os.environ.get("GITLAB_PRIVATE_TOKEN")
 if private_token:
-    HEADERS.update({"PRIVATE-TOKEN", private_token})
+    HEADERS.update({"PRIVATE-TOKEN": private_token})
 
 
 def get_project(remote_path):

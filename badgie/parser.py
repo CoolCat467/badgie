@@ -1,14 +1,14 @@
 import re
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 from .constants import PATTERN_END, PATTERN_START
 
 
 class Token(NamedTuple):
-    type: str
     value: str
     line: int
     column: int
+    type: Optional[str]
 
 
 def tokenize(text: str):

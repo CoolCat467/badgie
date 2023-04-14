@@ -20,9 +20,10 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    package_data={"badgie": ["py.typed"]},
     entry_points={
         "console_scripts": [
-            "badgie = badgie.__main__:main",
+            "badgie = badgie.cli:main",
         ],
     },
     install_requires=install_requires,

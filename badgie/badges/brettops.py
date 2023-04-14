@@ -4,10 +4,15 @@ from ._base import Badge, register_badge
 
 @register_badge
 class BrettOpsBadge(Badge):
+    """
+    Show that the repository is a BrettOps repository.
+    """
+
     name = "brettops"
 
     remotes = (
         Remote(prefix="https://gitlab.com/brettops/containers/", name="container"),
+        Remote(prefix="https://gitlab.com/brettops/packages/", name="package"),
         Remote(prefix="https://gitlab.com/brettops/pipelines/", name="pipeline"),
         Remote(prefix="https://gitlab.com/brettops/tools/", name="tool"),
         Remote(prefix="https://gitlab.com/brettops/ansible/roles/", name="role"),

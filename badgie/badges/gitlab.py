@@ -3,6 +3,10 @@ from ._base import Badge, register_badge
 
 @register_badge
 class GitLabLatestReleaseBadge(Badge):
+    """
+    Show the latest GitLab release by date.
+    """
+
     name = "gitlab-latest-release"
     link_title = "latest release"
 
@@ -15,6 +19,10 @@ class GitLabLatestReleaseBadge(Badge):
 
 @register_badge
 class GitLabCoverageReportBadge(Badge):
+    """
+    Show the most recent coverage score on the default branch.
+    """
+
     name = "gitlab-coverage-report"
     link_title = "coverage report"
 
@@ -27,6 +35,10 @@ class GitLabCoverageReportBadge(Badge):
 
 @register_badge
 class GitLabPipelineStatusBadge(Badge):
+    """
+    Show the most recent pipeline status on the default branch.
+    """
+
     name = "gitlab-pipeline-status"
     link_title = "pipeline status"
 

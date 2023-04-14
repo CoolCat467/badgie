@@ -3,6 +3,10 @@ from ._base import Badge, register_badge
 
 @register_badge
 class PreCommitBadge(Badge):
+    """
+    Show that the repository is using pre-commit.
+    """
+
     name = "pre-commit-enabled"
     link_title = "pre-commit"
 
