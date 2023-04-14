@@ -1,14 +1,16 @@
 import re
-from typing import NamedTuple, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 from .constants import PATTERN_END, PATTERN_START
 
 
-class Token(NamedTuple):
+@dataclass(frozen=True, kw_only=True)
+class Token:
     value: str
     line: int
     column: int
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 def tokenize(text: str):
@@ -26,7 +28,7 @@ def tokenize(text: str):
         kind = mo.lastgroup
         value = mo.group()
         column = mo.start() - line_start
-        yield Token(kind, value, line_num, column)
+        yield Token(type=kind, value=value, line=line_num, column=column)
 
 
 def parse_text(text: str, badge_text: str = ""):

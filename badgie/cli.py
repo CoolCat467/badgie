@@ -119,6 +119,8 @@ def main():
 
     args = parser.parse_args()
 
+    text = open(args.input, "r").read()
+
     print(
         colored("Hi, I'm", "cyan", attrs=["bold"]),
         colored("Badgie!", "white", attrs=["bold"]),
@@ -126,7 +128,6 @@ def main():
         file=sys.stderr,
     )
 
-    text = open(args.input, "r").read()
     badges = find_badges(text=text)
     badge_text = get_badge_text(badges=badges)
     output = parse_text(text, badge_text=badge_text)

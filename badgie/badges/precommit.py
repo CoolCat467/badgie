@@ -7,7 +7,7 @@ class PreCommitBadge(Badge):
     Show that the repository is using pre-commit.
     """
 
-    name = "pre-commit-enabled"
+    name = "pre-commit"
     link_title = "pre-commit"
 
     # Path.glob matching
