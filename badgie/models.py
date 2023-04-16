@@ -18,3 +18,9 @@ class Project:
 class Remote:
     name: str
     prefix: str
+
+
+@dataclass(frozen=True)
+class Hook:
+    repo: str
+    hook: str

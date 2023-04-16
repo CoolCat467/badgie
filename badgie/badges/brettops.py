@@ -9,6 +9,7 @@ class BrettOpsBadge(Badge):
     """
 
     name = "brettops"
+    example = "https://img.shields.io/badge/brettops-tool-209cdf?labelColor=162d50"
 
     remotes = (
         Remote(prefix="https://gitlab.com/brettops/containers/", name="container"),

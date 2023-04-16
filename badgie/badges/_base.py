@@ -4,13 +4,14 @@ from typing import Optional
 
 from termcolor import colored
 
-from ..models import Project, Remote
+from ..models import Hook, Project, Remote
 
 
 @dataclass(frozen=True)
 class Badge:
     project: Project
     remote: Optional[Remote] = None
+    hook: Optional[Hook] = None
 
     def __post_init__(self):
         print(

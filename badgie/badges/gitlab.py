@@ -8,6 +8,8 @@ class GitLabLatestReleaseBadge(Badge):
     """
 
     name = "gitlab-latest-release"
+    example = "https://img.shields.io/gitlab/v/release/brettops/tools/badgie"
+
     link_title = "latest release"
 
     def get_badge_image_url(self):
@@ -27,7 +29,8 @@ class GitLabCoverageReportBadge(Badge):
     link_title = "coverage report"
 
     def get_badge_image_url(self):
-        return f"{self.project.url}/badges/{self.project.ref}/coverage.svg"
+        # return f"{self.project.url}/badges/{self.project.ref}/coverage.svg"
+        return f"https://img.shields.io/gitlab/pipeline-status/{self.project.full_path}"
 
     def get_link_url(self):
         return f"{self.project.url}/-/commits/{self.project.ref}"

@@ -15,10 +15,12 @@ from .badges.gitlab import (
     GitLabPipelineStatusBadge,
 )
 from .badges.precommit import PreCommitBadge
+from .badges.python import PythonBlackBadge
 from .constants import PATTERN_GIT_SSH
+from .detectors.precommit import PreCommitConfigDetector
 from .parser import parse_text
 from .providers import gitlab as gitlab_provider
-from .sources import get_badge_from_files, get_badge_from_remotes
+from .sources.base import get_badge_from_remotes
 
 RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)
 
@@ -64,6 +66,12 @@ def find_badges(text):
     match = RE_GIT_SSH.match(url)
     if match:
         if match.group("host") == "gitlab.com":
+            print(
+                colored("- This looks like a", "white", attrs=["bold"]),
+                colored("GitLab", "blue", attrs=["bold"]),
+                colored("project", "white", attrs=["bold"]),
+                file=sys.stderr,
+            )
             glproject, project = gitlab_provider.get_project(match.group("path"))
 
             # add brettops badge
@@ -95,12 +103,16 @@ def find_badges(text):
                         )
                     )
 
-            # add pre-commit badge
-            new_badge = get_badge_from_files(
-                badge_class=PreCommitBadge, project=project
-            )
-            if new_badge is not None:
-                badges.append(new_badge)
+            try:
+                detector = PreCommitConfigDetector(project=project)
+            except FileNotFoundError:
+                detector = None
+            if detector:
+                badges.append(PreCommitBadge(project=project))
+                new_badge = detector.get_badge(badge_class=PythonBlackBadge)
+                if new_badge:
+                    badges.append(new_badge)
+
     return badges
 
 

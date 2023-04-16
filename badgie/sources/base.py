@@ -1,7 +1,7 @@
 from typing import Type
 
-from .badges._base import Badge
-from .models import Project
+from ..badges._base import Badge
+from ..models import Project
 
 
 def get_badge_from_files(badge_class: Type[Badge], project: Project):
