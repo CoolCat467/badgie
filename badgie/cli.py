@@ -9,13 +9,13 @@ from termcolor import colored
 from ._version import __version__
 from .badges._base import _BADGES
 from .badges.brettops import BrettOpsBadge
+from .badges.codestyle import CodeStyleBlackBadge, CodeStylePrettierBadge
 from .badges.gitlab import (
     GitLabCoverageReportBadge,
     GitLabLatestReleaseBadge,
     GitLabPipelineStatusBadge,
 )
 from .badges.precommit import PreCommitBadge
-from .badges.python import PythonBlackBadge
 from .constants import PATTERN_GIT_SSH
 from .detectors.precommit import PreCommitConfigDetector
 from .parser import parse_text
@@ -109,7 +109,10 @@ def find_badges(text):
                 detector = None
             if detector:
                 badges.append(PreCommitBadge(project=project))
-                new_badge = detector.get_badge(badge_class=PythonBlackBadge)
+                new_badge = detector.get_badge(badge_class=CodeStyleBlackBadge)
+                if new_badge:
+                    badges.append(new_badge)
+                new_badge = detector.get_badge(badge_class=CodeStylePrettierBadge)
                 if new_badge:
                     badges.append(new_badge)
 
