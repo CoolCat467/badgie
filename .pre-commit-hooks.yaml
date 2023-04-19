@@ -1,0 +1,7 @@
+---
+- id: badgie
+  name: Run badgie
+  description: Update project badges
+  language: python
+  types: ["markdown", "text"]
+  entry: badgie -w

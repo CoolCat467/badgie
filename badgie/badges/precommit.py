@@ -14,7 +14,7 @@ class PreCommitBadge(Badge):
     files = (".pre-commit-config.yaml",)
 
     def get_badge_image_url(self):
-        return f"https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white"
+        return "https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit"
 
     def get_link_url(self):
         return f"https://github.com/pre-commit/pre-commit"
