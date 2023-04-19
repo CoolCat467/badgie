@@ -113,6 +113,39 @@ And enjoy magic badges:
 <!-- END BADGIE TIME -->
 ```
 
+### Use as a pre-commit hook
+
+Badgie can be used as a pre-commit hook, so you can get fresh badges on every
+commit.
+
+Add the following to a `.pre-commit-config.yaml` file. Note the empty
+`rev` tag:
+
+```yaml
+repos:
+  - repo: https://gitlab.com/brettops/tools/badgie
+    rev: ""
+    hooks:
+      - id: badgie
+```
+
+Run `pre-commit autoupdate` to pin to the latest version:
+
+```bash
+pre-commit autoupdate
+```
+
+Run `pre-commit` directly or install as a hook:
+
+```bash
+# directly
+pre-commit
+
+# as a Git hook
+pre-commit install
+git commit -m "..."
+```
+
 ## Caveats
 
 Badgie makes decisions on the assumption that you do sensible things with your
