@@ -16,8 +16,6 @@ include:
   - project: brettops/pipelines/python
     file: lint.yml
   - project: brettops/pipelines/python
-    file: gitlab-release.yml
-  - project: brettops/pipelines/python
     file: setuptools.yml
   - project: brettops/pipelines/python
     file: twine.yml
