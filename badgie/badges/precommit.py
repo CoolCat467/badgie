@@ -8,6 +8,9 @@ class PreCommitBadge(Badge):
     """
 
     name = "pre-commit"
+    example = (
+        "https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit"
+    )
     link_title = "pre-commit"
 
     # Path.glob matching

@@ -10,6 +10,8 @@ workflow:
     - when: always
 
 include:
+  - project: brettops/pipelines/pages
+    file: include.yml
   - project: brettops/pipelines/prettier
     file: include.yml
 
@@ -22,3 +24,14 @@ include:
 
 variables:
   PYTHON_PACKAGE_DIR: badgie
+
+badgie-badge-listing:
+  stage: build
+  image: ${CONTAINER_PROXY}python:3.11-alpine
+  script:
+    - pip3 install .
+    - mkdir -p public
+    - badgie --dump-badge-data > public/badge-listing.json
+  artifacts:
+    paths:
+      - public

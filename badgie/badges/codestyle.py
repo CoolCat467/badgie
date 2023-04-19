@@ -9,12 +9,14 @@ class CodeStyleBlackBadge(Badge):
     """
 
     name = "code-style-black"
+    example = "https://img.shields.io/badge/code_style-black-000000.svg"
+
     link_title = "code style: black"
 
     precommit_hooks = (Hook(repo="https://github.com/psf/black", hook="black"),)
 
     def get_badge_image_url(self):
-        return r"https://img.shields.io/badge/code_style-black-000000.svg"
+        return "https://img.shields.io/badge/code_style-black-000000.svg"
 
     def get_link_url(self):
         return "https://github.com/psf/black"
@@ -27,6 +29,8 @@ class CodeStylePrettierBadge(Badge):
     """
 
     name = "code-style-prettier"
+    example = "https://img.shields.io/badge/code_style-prettier-ff69b4.svg"
+
     link_title = "code style: prettier"
 
     precommit_hooks = (
@@ -34,7 +38,7 @@ class CodeStylePrettierBadge(Badge):
     )
 
     def get_badge_image_url(self):
-        return r"https://img.shields.io/badge/code_style-prettier-ff69b4.svg"
+        return "https://img.shields.io/badge/code_style-prettier-ff69b4.svg"
 
     def get_link_url(self):
         return "https://github.com/prettier/prettier"

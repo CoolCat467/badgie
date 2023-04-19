@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import re
 import subprocess
@@ -56,6 +57,46 @@ class ListAction(argparse.Action):
                     description=badge.__doc__.strip(),
                 )
             )
+        parser.exit()
+
+
+class DumpAction(argparse.Action):
+    def __init__(
+        self,
+        option_strings,
+        dest=argparse.SUPPRESS,
+        default=argparse.SUPPRESS,
+        help="dump badge data",
+    ):
+        super().__init__(
+            option_strings=option_strings,
+            dest=dest,
+            default=default,
+            nargs=0,
+            help=help,
+        )
+
+    def __call__(self, parser, _namespace, _values, _option_string=None):
+        badges = []
+        for badge in sorted(_BADGES.values(), key=lambda x: x.name):
+            badges.append(
+                dict(
+                    name=badge.name,
+                    description=badge.__doc__.strip(),
+                    example=badge.example,
+                )
+            )
+        from datetime import datetime
+
+        print(
+            json.dumps(
+                dict(
+                    generated=datetime.utcnow().isoformat(),
+                    badges=badges,
+                ),
+                indent=4,
+            )
+        )
         parser.exit()
 
 
@@ -122,6 +163,7 @@ def find_badges(text):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--list", action=ListAction, help="list available badges")
+    parser.add_argument("--dump-badge-data", action=DumpAction, help="dump badge data")
     parser.add_argument(
         "-w", "--write", action="store_true", help="write changes to the file"
     )

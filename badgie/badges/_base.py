@@ -9,6 +9,9 @@ from ..models import Hook, Project, Remote
 
 @dataclass(frozen=True)
 class Badge:
+    name: str
+    example: str
+
     project: Project
     remote: Optional[Remote] = None
     hook: Optional[Hook] = None

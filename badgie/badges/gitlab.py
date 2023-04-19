@@ -26,11 +26,14 @@ class GitLabCoverageReportBadge(Badge):
     """
 
     name = "gitlab-coverage-report"
+    example = "https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie"
+
     link_title = "coverage report"
 
     def get_badge_image_url(self):
-        # return f"{self.project.url}/badges/{self.project.ref}/coverage.svg"
-        return f"https://img.shields.io/gitlab/pipeline-status/{self.project.full_path}"
+        return (
+            f"https://img.shields.io/gitlab/pipeline-coverage/{self.project.full_path}"
+        )
 
     def get_link_url(self):
         return f"{self.project.url}/-/commits/{self.project.ref}"
@@ -43,10 +46,12 @@ class GitLabPipelineStatusBadge(Badge):
     """
 
     name = "gitlab-pipeline-status"
+    example = "https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie"
+
     link_title = "pipeline status"
 
     def get_badge_image_url(self):
-        return f"{self.project.url}/badges/{self.project.ref}/pipeline.svg"
+        return f"https://img.shields.io/gitlab/pipeline-status/{self.project.full_path}"
 
     def get_link_url(self):
         return f"{self.project.url}/-/commits/{self.project.ref}"
