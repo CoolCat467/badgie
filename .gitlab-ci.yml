@@ -25,13 +25,13 @@ include:
 variables:
   PYTHON_PACKAGE_DIR: badgie
 
-badgie-badge-listing:
+badgie-badges:
   stage: build
   image: ${CONTAINER_PROXY}python:3.11-alpine
   script:
     - pip3 install .
     - mkdir -p public
-    - badgie --dump-badge-data > public/badge-listing.json
+    - badgie --dump-badge-data > public/badges.json
   artifacts:
     paths:
       - public
