@@ -1,8 +1,20 @@
-from dataclasses import dataclass
 from pathlib import Path
 
+from attrs import define, field
 
-@dataclass(frozen=True)
+
+@define(frozen=True, slots=True, kw_only=True)
+class Node:
+    tokens: set[str]
+
+
+@define(frozen=True, slots=True, kw_only=True)
+class File(Node):
+    path: Path
+    pattern: str
+
+
+@define(frozen=True, slots=True, kw_only=True)
 class Project:
     local_path: Path
     url: str
@@ -14,13 +26,25 @@ class Project:
     full_path: str
 
 
-@dataclass(frozen=True)
+@define(frozen=True, slots=True, kw_only=True)
 class Remote:
     name: str
     prefix: str
 
 
-@dataclass(frozen=True)
+@define(frozen=True, slots=True, kw_only=True)
 class Hook:
     repo: str
     hook: str
+
+
+@define(slots=True, kw_only=True)
+class Context:
+    path: Path
+
+    nodes: dict[str, list[Node]] = field(factory=dict)
+    tokens_found: set[Node] = field(factory=set)
+    tokens_processed: set[Node] = field(factory=set)
+
+    providers: dict[Node] = field(factory=dict)
+    badges: dict[Node] = field(factory=dict)

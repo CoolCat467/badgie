@@ -7,6 +7,7 @@ import sys
 
 from termcolor import colored
 
+from . import gitlab as gitlab_provider
 from ._version import __version__
 from .badges._base import _BADGES
 from .badges.brettops import BrettOpsBadge
@@ -20,7 +21,6 @@ from .badges.precommit import PreCommitBadge
 from .constants import PATTERN_GIT_SSH
 from .detectors.precommit import PreCommitConfigDetector
 from .parser import parse_text
-from .providers import gitlab as gitlab_provider
 from .sources.base import get_badge_from_remotes
 
 RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)

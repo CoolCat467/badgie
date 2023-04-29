@@ -1,19 +1,21 @@
 import sys
-from dataclasses import dataclass
 from typing import Type
 
 import yaml
+from attrs import define, field
 from termcolor import colored
 
 from ..badges._base import Badge
 from ..models import Project
 
 
-@dataclass
+@define
 class PreCommitConfigDetector:
     project: Project
+    _data: dict = field(init=False)
+    _entries: set = field(init=False)
 
-    def __post_init__(self):
+    def __attrs_post_init__(self):
         path = self.project.local_path / ".pre-commit-config.yaml"
         self._data = yaml.safe_load(open(path))
         self._entries = set()

@@ -28,7 +28,7 @@ setup(
     },
     install_requires=install_requires,
     python_requires=">=3.9",
-    keywords="badge template markdown",
+    keywords=["badge", "template", "markdown"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",

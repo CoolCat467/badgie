@@ -1,11 +1,12 @@
 import re
-from dataclasses import dataclass
 from typing import Optional
+
+from attrs import define
 
 from .constants import PATTERN_END, PATTERN_START
 
 
-@dataclass(frozen=True, kw_only=True)
+@define
 class Token:
     value: str
     line: int

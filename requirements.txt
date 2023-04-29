@@ -4,6 +4,8 @@
 #
 #    pip-compile --no-emit-index-url
 #
+attrs==23.1.0
+    # via -r requirements.in
 certifi==2022.12.7
     # via requests
 charset-normalizer==3.1.0
@@ -14,13 +16,13 @@ python-gitlab==3.14.0
     # via -r requirements.in
 pyyaml==6.0
     # via -r requirements.in
-requests==2.28.2
+requests==2.29.0
     # via
     #   python-gitlab
     #   requests-toolbelt
 requests-toolbelt==0.10.1
     # via python-gitlab
-termcolor==2.2.0
+termcolor==2.3.0
     # via -r requirements.in
 urllib3==1.26.15
     # via requests

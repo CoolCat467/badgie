@@ -1,22 +1,19 @@
 import sys
-from dataclasses import dataclass
 from typing import Optional
 
+from attrs import define
 from termcolor import colored
 
 from ..models import Hook, Project, Remote
 
 
-@dataclass(frozen=True)
+@define
 class Badge:
-    name: str
-    example: str
-
     project: Project
     remote: Optional[Remote] = None
     hook: Optional[Hook] = None
 
-    def __post_init__(self):
+    def __attrs_post_init__(self):
         print(
             colored(
                 "- adding a {name} badge".format(

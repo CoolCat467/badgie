@@ -6,7 +6,7 @@ from pathlib import Path
 
 import gitlab
 
-from ..models import Project
+from .models import Project
 
 GITLAB_URL = "https://gitlab.com"
 API_V4_URL = f"{GITLAB_URL}/api/v4"
