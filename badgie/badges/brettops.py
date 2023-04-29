@@ -1,4 +1,4 @@
-from ..models import Remote
+from ..models import OldRemote
 from ._base import Badge, register_badge
 
 
@@ -12,11 +12,11 @@ class BrettOpsBadge(Badge):
     example = "https://img.shields.io/badge/brettops-tool-209cdf?labelColor=162d50"
 
     remotes = (
-        Remote(prefix="https://gitlab.com/brettops/containers/", name="container"),
-        Remote(prefix="https://gitlab.com/brettops/packages/", name="package"),
-        Remote(prefix="https://gitlab.com/brettops/pipelines/", name="pipeline"),
-        Remote(prefix="https://gitlab.com/brettops/tools/", name="tool"),
-        Remote(prefix="https://gitlab.com/brettops/ansible/roles/", name="role"),
+        OldRemote(prefix="https://gitlab.com/brettops/containers/", name="container"),
+        OldRemote(prefix="https://gitlab.com/brettops/packages/", name="package"),
+        OldRemote(prefix="https://gitlab.com/brettops/pipelines/", name="pipeline"),
+        OldRemote(prefix="https://gitlab.com/brettops/tools/", name="tool"),
+        OldRemote(prefix="https://gitlab.com/brettops/ansible/roles/", name="role"),
     )
 
     def get_link_title(self):

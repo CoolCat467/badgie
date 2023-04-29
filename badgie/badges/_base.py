@@ -4,13 +4,13 @@ from typing import Optional
 from attrs import define
 from termcolor import colored
 
-from ..models import Hook, Project, Remote
+from ..models import Hook, OldRemote, Project
 
 
 @define
 class Badge:
     project: Project
-    remote: Optional[Remote] = None
+    remote: Optional[OldRemote] = None
     hook: Optional[Hook] = None
 
     def __attrs_post_init__(self):

@@ -3,9 +3,15 @@ ANSIBLE_COLLECTION = "ansible_collection"
 ANSIBLE_GALAXY = "ansible_galaxy"
 ANSIBLE_ROLE = "ansible_role"
 
+BRETTOPS = "brettops"
+
 DETECT_SECRETS = "detect_secrets"  # pragma: allowlist secret
 
 GIT = "git"
+
+GITHUB = "github"
+GITHUB_ACTIONS = "github_actions"
+
 GITLAB = "gitlab"
 GITLAB_CI = "gitlab_ci"
 GITLAB_COVERAGE = "gitlab_coverage"

@@ -1,9 +1,10 @@
 import re
-import subprocess
 from pathlib import Path
+from typing import Optional
 
-from ... import tokens as to
-from ...models import File
+from . import tokens as to
+from .models import Context, File
+from .project import get_project_paths
 
 FILES = {
     ".gitignore": {to.GIT},
@@ -25,23 +26,16 @@ RE_FILES = {
 }
 
 
-def match_file(path):
+def match_file(path: Path) -> Optional[File]:
     for regex, tokens in RE_FILES.items():
         match = regex.match(str(path))
-        # if regex.match(str(path)): # .match(pattern):
         if match:
             return File(tokens=tokens, path=path, pattern=match.re.pattern)
 
 
-def run(_context):
-    paths = [
-        Path(path)
-        for path in subprocess.run(
-            ["git", "ls-files"], text=True, stdout=subprocess.PIPE
-        ).stdout.splitlines()
-    ]
+def run(_context: Context) -> list[File]:
     nodes = []
-    for path in paths:
+    for path in get_project_paths():
         file = match_file(path)
         if file:
             nodes.append(file)
