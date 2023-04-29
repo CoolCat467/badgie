@@ -33,7 +33,7 @@ def match_file(path):
             return File(tokens=tokens, path=path, pattern=match.re.pattern)
 
 
-def run(context):
+def run(_context):
     paths = [
         Path(path)
         for path in subprocess.run(

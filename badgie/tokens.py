@@ -1,5 +1,3 @@
-# ansible
-
 ANSIBLE = "ansible"
 ANSIBLE_COLLECTION = "ansible_collection"
 ANSIBLE_GALAXY = "ansible_galaxy"
