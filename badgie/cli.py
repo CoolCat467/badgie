@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Optional
 
 from termcolor import colored
 
@@ -15,6 +16,7 @@ from .finders import files, gitlab, pre_commit_config, remotes
 from .models import Badge, Context
 from .parser import parse_text
 from .project import get_project_root
+from .urls import add_to_query
 
 
 def to_markdown(badge):
@@ -114,7 +116,7 @@ def init_badges():
         importlib.import_module(module)
 
 
-def assemble_badge_list(context) -> list[Badge]:
+def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[Badge]:
     badges = []
     for token, nodelist in context.nodes.items():
         if token in _BADGES:
@@ -129,13 +131,18 @@ def assemble_badge_list(context) -> list[Badge]:
             )
             node = nodelist[0]
 
+            image = badge.image.format(node=node)
+
+            if style:
+                image = add_to_query(image, {"style": style})
+
             finalbadge = Badge(
                 name=badge.name,
                 description=badge.description,
                 example=badge.example,
                 title=badge.title.format(node=node),
                 link=badge.link.format(node=node),
-                image=badge.image.format(node=node),
+                image=image,
                 weight=badge.weight,
             )
 
@@ -144,7 +151,7 @@ def assemble_badge_list(context) -> list[Badge]:
     return sorted(badges, key=lambda badge: badge.weight)
 
 
-def find_badges() -> list[Badge]:
+def build_badge_context() -> Context:
     project_root = get_project_root()
     os.chdir(project_root)
 
@@ -159,7 +166,7 @@ def find_badges() -> list[Badge]:
     if to.PRE_COMMIT_CONFIG in context.nodes:
         context.run(pre_commit_config)
 
-    return assemble_badge_list(context)
+    return context
 
 
 def main():
@@ -168,6 +175,12 @@ def main():
     parser.add_argument("--dump-badge-data", action=DumpAction, help="dump badge data")
     parser.add_argument(
         "-w", "--write", action="store_true", help="write changes to the file"
+    )
+    parser.add_argument(
+        "-s",
+        "--style",
+        choices=["plastic", "flat", "flat-square", "for-the-badge", "social"],
+        help="change badge style",
     )
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"
@@ -189,7 +202,8 @@ def main():
         file=sys.stderr,
     )
 
-    badges = find_badges()
+    context = build_badge_context()
+    badges = assemble_badge_list(context, style=args.style)
     badge_text = get_badge_text(badges=badges)
     output = parse_text(text, badge_text=badge_text)
 
