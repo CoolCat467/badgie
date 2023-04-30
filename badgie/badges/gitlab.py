@@ -1,57 +1,35 @@
-from ._base import Badge, register_badge
+from .. import tokens as to
+from ..models import Badge
+from ._base import register_badges
 
-
-@register_badge
-class GitLabLatestReleaseBadge(Badge):
-    """
-    Show the latest GitLab release by date.
-    """
-
-    name = "gitlab-latest-release"
-    example = "https://img.shields.io/gitlab/v/release/brettops/tools/badgie"
-
-    link_title = "latest release"
-
-    def get_badge_image_url(self):
-        return f"https://img.shields.io/gitlab/v/release/{self.project.full_path}"
-
-    def get_link_url(self):
-        return f"{self.project.url}/-/releases"
-
-
-@register_badge
-class GitLabCoverageReportBadge(Badge):
-    """
-    Show the most recent coverage score on the default branch.
-    """
-
-    name = "gitlab-coverage-report"
-    example = "https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie"
-
-    link_title = "coverage report"
-
-    def get_badge_image_url(self):
-        return (
-            f"https://img.shields.io/gitlab/pipeline-coverage/{self.project.full_path}"
-        )
-
-    def get_link_url(self):
-        return f"{self.project.url}/-/commits/{self.project.ref}"
-
-
-@register_badge
-class GitLabPipelineStatusBadge(Badge):
-    """
-    Show the most recent pipeline status on the default branch.
-    """
-
-    name = "gitlab-pipeline-status"
-    example = "https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie"
-
-    link_title = "pipeline status"
-
-    def get_badge_image_url(self):
-        return f"https://img.shields.io/gitlab/pipeline-status/{self.project.full_path}"
-
-    def get_link_url(self):
-        return f"{self.project.url}/-/commits/{self.project.ref}"
+register_badges(
+    {
+        to.GITLAB_COVERAGE: Badge(
+            name="gitlab-coverage-report",
+            description="Show the most recent coverage score on the default branch.",
+            example="https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie",
+            title="coverage report",
+            link="{node.url}/-/commits/{node.ref}",
+            image="https://img.shields.io/gitlab/pipeline-coverage/{node.full_path}",
+            weight=1,
+        ),
+        to.GITLAB_PIPELINE: Badge(
+            name="gitlab-pipeline-status",
+            description="Show the most recent pipeline status on the default branch.",
+            example="https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie",
+            title="pipeline status",
+            link="{node.url}/-/commits/{node.ref}",
+            image="https://img.shields.io/gitlab/pipeline-status/{node.full_path}",
+            weight=0,
+        ),
+        to.GITLAB_RELEASE: Badge(
+            name="gitlab-latest-release",
+            description="Show the latest GitLab release by date.",
+            example="https://img.shields.io/gitlab/v/release/brettops/tools/badgie",
+            title="latest release",
+            link="{node.url}/-/releases",
+            image="https://img.shields.io/gitlab/v/release/{node.full_path}",
+            weight=2,
+        ),
+    }
+)

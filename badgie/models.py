@@ -5,6 +5,19 @@ from attrs import define, field
 
 
 @define(frozen=True, slots=True, kw_only=True)
+class Badge:
+    name: str
+    description: str
+    example: str
+
+    title: str
+    link: str
+    image: str
+
+    weight: int = 0
+
+
+@define(frozen=True, slots=True, kw_only=True)
 class Node:
     tokens: set[str]
 
@@ -22,9 +35,15 @@ class OldRemote:
 
 
 @define(frozen=True, slots=True, kw_only=True)
+class RemoteMatch:
+    host: str
+    path_prefix: Optional[str] = None
+
+
+@define(frozen=True, slots=True, kw_only=True)
 class Remote(Node):
-    host: Optional[str] = None
-    prefix: Optional[str] = None
+    host: str
+    path: Optional[str] = None
 
 
 @define(frozen=True, slots=True, kw_only=True)
@@ -53,7 +72,24 @@ class Project:
 
 
 @define(frozen=True, slots=True, kw_only=True)
-class Hook:
+class GitLabProject(Node):
+    url: str
+    ref: str
+    namespace: str
+    name: str
+    full_name: str
+    path: str
+    full_path: str
+
+
+@define(frozen=True, slots=True, kw_only=True)
+class Hook(Node):
+    repo: str
+    hook: str
+
+
+@define(frozen=True, slots=True, kw_only=True)
+class HookMatch:
     repo: str
     hook: str
 
@@ -75,3 +111,7 @@ class Context:
                 self.nodes.setdefault(token, [])
                 self.nodes[token].append(node)
             self.tokens_found |= node.tokens
+
+    def run(self, module):
+        nodes = module.run(self)
+        self.add_nodes(nodes)

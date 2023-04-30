@@ -1,29 +1,26 @@
-from ..models import OldRemote
-from ._base import Badge, register_badge
+from .. import tokens as to
+from ..models import Badge
+from ._base import register_badges
 
 
-@register_badge
-class BrettOpsBadge(Badge):
-    """
-    Show that the repository is a BrettOps repository.
-    """
-
-    name = "brettops"
-    example = "https://img.shields.io/badge/brettops-tool-209cdf?labelColor=162d50"
-
-    remotes = (
-        OldRemote(prefix="https://gitlab.com/brettops/containers/", name="container"),
-        OldRemote(prefix="https://gitlab.com/brettops/packages/", name="package"),
-        OldRemote(prefix="https://gitlab.com/brettops/pipelines/", name="pipeline"),
-        OldRemote(prefix="https://gitlab.com/brettops/tools/", name="tool"),
-        OldRemote(prefix="https://gitlab.com/brettops/ansible/roles/", name="role"),
+def brettops_badge(name):
+    return Badge(
+        name=f"brettops-{name}",
+        description=f"Show that this {name} project is a BrettOps project.",
+        example=f"https://img.shields.io/badge/brettops-{name}-209cdf?labelColor=162d50",
+        title=f"brettops {name}",
+        link="https://brettops.io",
+        image=f"https://img.shields.io/badge/brettops-{name}-209cdf?labelColor=162d50",
+        weight=-100,
     )
 
-    def get_link_title(self):
-        return f"brettops {self.remote.name}"
 
-    def get_badge_image_url(self):
-        return f"https://img.shields.io/badge/brettops-{self.remote.name}-209cdf?labelColor=162d50"
-
-    def get_link_url(self):
-        return "https://brettops.io"
+register_badges(
+    {
+        to.BRETTOPS_CONTAINER: brettops_badge("container"),
+        to.BRETTOPS_PACKAGE: brettops_badge("package"),
+        to.BRETTOPS_PIPELINE: brettops_badge("pipeline"),
+        to.BRETTOPS_ROLE: brettops_badge("role"),
+        to.BRETTOPS_TOOL: brettops_badge("tool"),
+    }
+)

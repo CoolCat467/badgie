@@ -1,35 +1,34 @@
 import argparse
+import importlib
 import json
 import logging
-import re
-import subprocess
+import os
 import sys
+from pathlib import Path
 
 from termcolor import colored
 
-from . import gitlab as gitlab_provider
+from . import tokens as to
 from ._version import __version__
 from .badges._base import _BADGES
-from .badges.brettops import BrettOpsBadge
-from .badges.codestyle import CodeStyleBlackBadge, CodeStylePrettierBadge
-from .badges.gitlab import (
-    GitLabCoverageReportBadge,
-    GitLabLatestReleaseBadge,
-    GitLabPipelineStatusBadge,
-)
-from .badges.precommit import PreCommitBadge
-from .constants import PATTERN_GIT_SSH
-from .detectors.precommit import PreCommitConfigDetector
+from .finders import files, gitlab, pre_commit_config, remotes
+from .models import Badge, Context
 from .parser import parse_text
-from .sources.base import get_badge_from_remotes
+from .project import get_project_root
 
-RE_GIT_SSH = re.compile(PATTERN_GIT_SSH)
 
-logging.basicConfig(level=logging.WARNING)
+def to_markdown(badge):
+    return f"[![{badge.title}]({badge.image})]({badge.link})"
 
 
 def get_badge_text(badges, format="markdown"):
-    return "\n".join(getattr(badge, f"get_{format}")() for badge in badges)
+    lines = []
+    for badge in badges:
+        try:
+            lines.append(getattr(badge, f"get_{format}")())
+        except AttributeError:
+            lines.append(to_markdown(badge))
+    return "\n".join(lines)
 
 
 class ListAction(argparse.Action):
@@ -49,12 +48,12 @@ class ListAction(argparse.Action):
         )
 
     def __call__(self, parser, _namespace, _values, _option_string=None):
-        for name, badge in sorted(_BADGES.items(), key=lambda x: x[0]):
-            # print(name, badge)
+        init_badges()
+        for badge in sorted(_BADGES.values(), key=lambda x: x.name):
             print(
                 "{name}: {description}".format(
-                    name=colored(name, "cyan", attrs=["bold"]),
-                    description=badge.__doc__.strip(),
+                    name=colored(badge.name, "cyan", attrs=["bold"]),
+                    description=badge.description.strip(),
                 )
             )
         parser.exit()
@@ -77,12 +76,13 @@ class DumpAction(argparse.Action):
         )
 
     def __call__(self, parser, _namespace, _values, _option_string=None):
+        init_badges()
         badges = []
         for badge in sorted(_BADGES.values(), key=lambda x: x.name):
             badges.append(
                 dict(
                     name=badge.name,
-                    description=badge.__doc__.strip(),
+                    description=badge.description.strip(),
                     example=badge.example,
                 )
             )
@@ -100,64 +100,66 @@ class DumpAction(argparse.Action):
         parser.exit()
 
 
-def find_badges(text):
+def init_badges():
+    location = Path(__file__).parent
+    modules = list(location.glob("badges/[a-z]*.py"))
+    modules = [
+        os.path.splitext(
+            "badgie.{}".format(str(module.relative_to(location)).replace(os.sep, "."))
+        )[0]
+        for module in modules
+    ]
+    for module in modules:
+        logging.info("loading %s badge provider", module)
+        importlib.import_module(module)
+
+
+def assemble_badge_list(context) -> list[Badge]:
     badges = []
-    process = subprocess.run(["git", "remote", "-v"], text=True, capture_output=True)
-    url = process.stdout.splitlines()[0].split("\t")[1].split(" ")[0]
-    match = RE_GIT_SSH.match(url)
-    if match:
-        if match.group("host") == "gitlab.com":
+    for token, nodelist in context.nodes.items():
+        if token in _BADGES:
+            badge = _BADGES[token]
             print(
-                colored("- This looks like a", "white", attrs=["bold"]),
-                colored("GitLab", "blue", attrs=["bold"]),
-                colored("project", "white", attrs=["bold"]),
+                colored(
+                    "- adding a {name} badge".format(
+                        name=colored(badge.name, "blue", attrs=["bold"])
+                    )
+                ),
                 file=sys.stderr,
             )
-            glproject, project = gitlab_provider.get_project(match.group("path"))
+            node = nodelist[0]
 
-            # add brettops badge
-            new_badge = get_badge_from_remotes(
-                badge_class=BrettOpsBadge, project=project
+            finalbadge = Badge(
+                name=badge.name,
+                description=badge.description,
+                example=badge.example,
+                title=badge.title.format(node=node),
+                link=badge.link.format(node=node),
+                image=badge.image.format(node=node),
+                weight=badge.weight,
             )
-            if new_badge is not None:
-                badges.append(new_badge)
 
-            # get gitlab latest release badge
-            release = gitlab_provider.get_latest_release(glproject.id)
-            if release:
-                badges.append(
-                    GitLabLatestReleaseBadge(
-                        project=project,
-                    )
-                )
+            badges.append(finalbadge)
 
-            # add gitlab latest pipeline badge
-            glpipeline = gitlab_provider.get_latest_pipeline(glproject)
-            if glpipeline is not None:
-                badges.append(GitLabPipelineStatusBadge(project=project))
+    return sorted(badges, key=lambda badge: badge.weight)
 
-                # add gitlab coverage badge
-                if glpipeline.coverage is not None:
-                    badges.append(
-                        GitLabCoverageReportBadge(
-                            project=project,
-                        )
-                    )
 
-            try:
-                detector = PreCommitConfigDetector(project=project)
-            except FileNotFoundError:
-                detector = None
-            if detector:
-                badges.append(PreCommitBadge(project=project))
-                new_badge = detector.get_badge(badge_class=CodeStyleBlackBadge)
-                if new_badge:
-                    badges.append(new_badge)
-                new_badge = detector.get_badge(badge_class=CodeStylePrettierBadge)
-                if new_badge:
-                    badges.append(new_badge)
+def find_badges() -> list[Badge]:
+    project_root = get_project_root()
+    os.chdir(project_root)
 
-    return badges
+    init_badges()
+
+    context = Context(path=project_root)
+
+    context.run(files)
+    context.run(remotes)
+    if to.GITLAB in context.nodes:
+        context.run(gitlab)
+    if to.PRE_COMMIT_CONFIG in context.nodes:
+        context.run(pre_commit_config)
+
+    return assemble_badge_list(context)
 
 
 def main():
@@ -176,6 +178,8 @@ def main():
 
     args = parser.parse_args()
 
+    logging.basicConfig(level=logging.WARNING)
+
     text = open(args.input, "r").read()
 
     print(
@@ -185,7 +189,7 @@ def main():
         file=sys.stderr,
     )
 
-    badges = find_badges(text=text)
+    badges = find_badges()
     badge_text = get_badge_text(badges=badges)
     output = parse_text(text, badge_text=badge_text)
 

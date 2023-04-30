@@ -2,9 +2,9 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from . import tokens as to
-from .models import Context, File
-from .project import get_project_paths
+from .. import tokens as to
+from ..models import Context, File
+from ..project import get_project_paths
 
 FILES = {
     ".gitignore": {to.GIT},
@@ -13,7 +13,7 @@ FILES = {
     ".pre-commit-config.ya?ml": {to.PRE_COMMIT_CONFIG},
     ".pre-commit-hooks.ya?ml": {to.PRE_COMMIT_HOOKS},
     ".secrets.baseline": {to.DETECT_SECRETS},
-    ".gitlab-ci.yml": {to.GITLAB_CI},
+    ".gitlab-ci.yml": {to.GITLAB_CI_FILE},
     "setup.cfg": {to.PYTHON_SETUP_CFG},
     "setup.py": {to.PYTHON_SETUPTOOLS},
     "pyproject.toml": {to.PYTHON_PYPROJECT_TOML},

@@ -6,7 +6,8 @@ from pathlib import Path
 
 import gitlab
 
-from .models import Project
+from .. import tokens as to
+from ..models import Context, GitLabProject, Project
 
 GITLAB_URL = "https://gitlab.com"
 API_V4_URL = f"{GITLAB_URL}/api/v4"
@@ -52,3 +53,36 @@ def get_latest_release(project_id):
         return json.loads(content)
     except urllib.error.HTTPError:
         return None
+
+
+def run(context: Context) -> list[GitLabProject]:
+    remote = context.nodes[to.GITLAB][0]
+    glproject, project = get_project(remote.path)
+    gltokens = set()
+
+    # get gitlab latest release badge
+    release = get_latest_release(glproject.id)
+    if release:
+        gltokens.add(to.GITLAB_RELEASE)
+
+    # add gitlab latest pipeline badge
+    glpipeline = get_latest_pipeline(glproject)
+    if glpipeline is not None:
+        gltokens.add(to.GITLAB_PIPELINE)
+
+        # add gitlab coverage badge
+        if glpipeline.coverage is not None:
+            gltokens.add(to.GITLAB_COVERAGE)
+
+    gitlabproject = GitLabProject(
+        tokens=gltokens,
+        url=project.url,
+        ref=project.ref,
+        namespace=project.namespace,
+        name=project.name,
+        path=project.path,
+        full_name=project.full_name,
+        full_path=project.full_path,
+    )
+
+    return [gitlabproject]

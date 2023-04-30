@@ -67,3 +67,11 @@ def get_project_paths() -> list[Path]:
             ["git", "ls-files"], text=True, stdout=subprocess.PIPE
         ).stdout.splitlines()
     ]
+
+
+def get_project_root() -> Path:
+    return Path(
+        subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"], text=True, stdout=subprocess.PIPE
+        ).stdout.strip()
+    )
