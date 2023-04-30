@@ -7,19 +7,19 @@ register_badges(
         to.GITLAB_COVERAGE: Badge(
             name="gitlab-coverage-report",
             description="Show the most recent coverage score on the default branch.",
-            example="https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie",
+            example="https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie?branch=main",
             title="coverage report",
             link="{node.url}/-/commits/{node.ref}",
-            image="https://img.shields.io/gitlab/pipeline-coverage/{node.full_path}",
+            image="https://img.shields.io/gitlab/pipeline-coverage/{node.full_path}?branch={node.ref}",
             weight=1,
         ),
         to.GITLAB_PIPELINE: Badge(
             name="gitlab-pipeline-status",
             description="Show the most recent pipeline status on the default branch.",
-            example="https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie",
+            example="https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie?branch=main",
             title="pipeline status",
             link="{node.url}/-/commits/{node.ref}",
-            image="https://img.shields.io/gitlab/pipeline-status/{node.full_path}",
+            image="https://img.shields.io/gitlab/pipeline-status/{node.full_path}?branch={node.ref}",
             weight=0,
         ),
         to.GITLAB_RELEASE: Badge(
