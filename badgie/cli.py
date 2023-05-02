@@ -54,7 +54,7 @@ class ListAction(argparse.Action):
         for badge in sorted(_BADGES.values(), key=lambda x: x.name):
             print(
                 "{name}: {description}".format(
-                    name=colored(badge.name, "cyan", attrs=["bold"]),
+                    name=colored(badge.name, "yellow"),
                     description=badge.description.strip(),
                 )
             )
