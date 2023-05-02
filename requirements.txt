@@ -20,7 +20,7 @@ requests==2.29.0
     # via
     #   python-gitlab
     #   requests-toolbelt
-requests-toolbelt==0.10.1
+requests-toolbelt==1.0.0
     # via python-gitlab
 termcolor==2.3.0
     # via -r requirements.in

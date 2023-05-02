@@ -30,7 +30,7 @@ repos:
       - id: isort
 
   - repo: https://gitlab.com/brettops/tools/badgie
-    rev: "0.6.1"
+    rev: "0.7.0"
     hooks:
       - id: badgie
 
