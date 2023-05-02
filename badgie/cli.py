@@ -16,7 +16,7 @@ from .finders import files, gitlab, pre_commit_config, remotes
 from .models import Badge, Context
 from .parser import parse_text
 from .project import get_project_root
-from .urls import add_to_query
+from .utils import add_to_query, change_directory
 
 
 def to_markdown(badge):
@@ -122,11 +122,7 @@ def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[B
         if token in _BADGES:
             badge = _BADGES[token]
             print(
-                colored(
-                    "- adding a {name} badge".format(
-                        name=colored(badge.name, "blue", attrs=["bold"])
-                    )
-                ),
+                "- adding a {name} badge".format(name=colored(badge.name, "yellow")),
                 file=sys.stderr,
             )
             node = nodelist[0]
@@ -153,20 +149,19 @@ def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[B
 
 def build_badge_context() -> Context:
     project_root = get_project_root()
-    os.chdir(project_root)
 
-    init_badges()
+    with change_directory(project_root):
+        init_badges()
 
-    context = Context(path=project_root)
+        context = Context(path=project_root)
+        context.run(files)
+        context.run(remotes)
+        if to.GITLAB in context.nodes:
+            context.run(gitlab)
+        if to.PRE_COMMIT_CONFIG in context.nodes:
+            context.run(pre_commit_config)
 
-    context.run(files)
-    context.run(remotes)
-    if to.GITLAB in context.nodes:
-        context.run(gitlab)
-    if to.PRE_COMMIT_CONFIG in context.nodes:
-        context.run(pre_commit_config)
-
-    return context
+        return context
 
 
 def main():
@@ -185,37 +180,41 @@ def main():
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
-    parser.add_argument(
-        "input",
-    )
+    parser.add_argument("files", nargs="+", metavar="FILE", help="input files")
 
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.WARNING)
 
-    text = open(args.input, "r").read()
+    for file in args.files:
+        if not Path(file).exists() or not Path(file).is_file():
+            parser.error(f"Unable to find file: {file}")
 
     print(
-        colored("Hi, I'm", "cyan", attrs=["bold"]),
-        colored("Badgie!", "white", attrs=["bold"]),
-        colored("Let's add some badges! 🐦\n", "cyan", attrs=["bold"]),
+        colored("Hi, I'm", "white", attrs=["bold"]),
+        colored("Badgie!", "yellow", attrs=["bold"]),
+        colored("Let's add some badges!", "white", attrs=["bold"]),
+        colored("🐦\n", "cyan", attrs=["bold"]),
         file=sys.stderr,
     )
 
     context = build_badge_context()
     badges = assemble_badge_list(context, style=args.style)
     badge_text = get_badge_text(badges=badges)
-    output = parse_text(text, badge_text=badge_text)
 
     print(
-        colored("\nThat's like", "cyan", attrs=["bold"]),
-        colored(f"{len(badges)} badges!", "white", attrs=["bold"]),
-        colored("Good job! 🐦", "cyan", attrs=["bold"]),
+        colored("\nThat's like", "white", attrs=["bold"]),
+        colored(f"{len(badges)} badges!", "yellow", attrs=["bold"]),
+        colored("Good job!", "white", attrs=["bold"]),
+        colored("🐦", "cyan", attrs=["bold"]),
         file=sys.stderr,
     )
 
-    if args.write:
-        with open(args.input, "w") as handle:
-            handle.write(output)
-    else:
-        print(output)
+    for file in args.files:
+        text = open(file, "r").read()
+        output = parse_text(text, badge_text=badge_text)
+        if args.write:
+            with open(file, "w") as handle:
+                handle.write(output)
+        else:
+            print(output)
