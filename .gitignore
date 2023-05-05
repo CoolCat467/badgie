@@ -1,8 +1,11 @@
+# python
 *.pyc
 __pycache__/
 *.egg-info/
 venv/
 .mypy_cache/
+.pytest_cache/
 .coverage
 
+# secrets
 env.sh

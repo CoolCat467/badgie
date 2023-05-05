@@ -30,7 +30,7 @@ setup(
     python_requires=">=3.9",
     keywords=["badge", "template", "markdown"],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
@@ -41,5 +41,7 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Topic :: Software Development :: Build Tools",
         "Topic :: Software Development :: Documentation",
+        "Topic :: Software Development :: Quality Assurance",
+        "Topic :: Utilities",
     ],
 )
