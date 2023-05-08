@@ -1,5 +1,5 @@
 import re
-import subprocess
+import subprocess  # nosec
 from pathlib import Path
 from typing import Optional
 
@@ -34,7 +34,7 @@ def get_project_remote(line) -> Optional[ProjectRemote]:
     type = type.replace("(", "").replace(")", "")
     match = match_remote_url(url)
     if not match:
-        return
+        return None
     return ProjectRemote(
         name=name,
         type=type,
@@ -56,7 +56,9 @@ def get_project_remotes_from_text(text) -> dict[str, dict[str, ProjectRemote]]:
 
 
 def get_project_remotes() -> dict[str, dict[str, ProjectRemote]]:
-    process = subprocess.run(["git", "remote", "-v"], text=True, capture_output=True)
+    process = subprocess.run(
+        ["git", "remote", "-v"], text=True, capture_output=True
+    )  # nosec
     return get_project_remotes_from_text(process.stdout)
 
 
@@ -65,7 +67,7 @@ def get_project_paths() -> list[Path]:
         Path(path)
         for path in subprocess.run(
             ["git", "ls-files"], text=True, stdout=subprocess.PIPE
-        ).stdout.splitlines()
+        ).stdout.splitlines()  # nosec
     ]
 
 
@@ -73,5 +75,5 @@ def get_project_root() -> Path:
     return Path(
         subprocess.run(
             ["git", "rev-parse", "--show-toplevel"], text=True, stdout=subprocess.PIPE
-        ).stdout.strip()
+        ).stdout.strip()  # nosec
     )

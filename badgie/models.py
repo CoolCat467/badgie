@@ -102,9 +102,6 @@ class Context:
     tokens_found: set[Node] = field(factory=set)
     tokens_processed: set[Node] = field(factory=set)
 
-    providers: dict[Node] = field(factory=dict)
-    badges: dict[Node] = field(factory=dict)
-
     def add_nodes(self, nodes):
         for node in nodes:
             for token in node.tokens:

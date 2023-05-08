@@ -8,6 +8,19 @@ HOOKS = {
         repo="https://github.com/pre-commit/mirrors-prettier/", hook="prettier"
     ): {to.PRETTIER},
     HookMatch(repo="https://github.com/psf/black/", hook="black"): {to.PYTHON_BLACK},
+    HookMatch(repo="https://github.com/PyCQA/bandit/", hook="bandit"): {
+        to.PYTHON_BANDIT
+    },
+    HookMatch(repo="https://github.com/PyCQA/isort/", hook="isort"): {to.PYTHON_ISORT},
+    HookMatch(repo="https://github.com/PyCQA/docformatter/", hook="docformatter"): {
+        to.PYTHON_DOCFORMATTER
+    },
+    HookMatch(
+        repo="https://github.com/PyCQA/docformatter/", hook="docformatter-venv"
+    ): {to.PYTHON_DOCFORMATTER},
+    HookMatch(repo="https://github.com/pre-commit/mirrors-mypy/", hook="mypy"): {
+        to.PYTHON_MYPY
+    },
 }
 
 
