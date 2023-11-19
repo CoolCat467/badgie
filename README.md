@@ -1,4 +1,10 @@
-# Badgie
+# Badgie Fork
+
+## This is a fork
+The original project can be found here:
+https://gitlab.com/brettops/tools/badgie/
+
+# Original readme:
 
 <!-- BADGIE TIME -->
 
