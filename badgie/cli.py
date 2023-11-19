@@ -156,7 +156,7 @@ def assemble_badge_list(
         if token in _BADGES:
             badge = _BADGES[token]
             print(
-                "- adding a {colored(badge.name, 'yellow')} badge",
+                f"- adding a {colored(badge.name, 'yellow')} badge",
                 file=sys.stderr,
             )
             node = nodelist[0]

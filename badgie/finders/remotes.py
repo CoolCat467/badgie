@@ -36,7 +36,9 @@ def match_remote(project_remote: ProjectRemote) -> list[Remote]:
 
 def run(_context: Context) -> list[Remote]:
     """Return list of remote code servers."""
-    remote = get_project_remotes().get("origin", {}).get("fetch", None)
+    remotes = get_project_remotes()
+    remote = remotes.get("origin", {}).get("fetch", None)
     if remote is None:
+        print(f"[DEBUG] {remotes = }")
         return []
     return match_remote(remote)
