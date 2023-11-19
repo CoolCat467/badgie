@@ -141,12 +141,12 @@ extend-ignore = [
 [tool.tox]
 legacy_tox_ini = """
     [tox]
-    envlist = py319, py310, py311, py312, pytest, mypy
+    envlist = py39, py310, py311, py312, pytest, mypy
     isolated_build = false
 
     [gh-actions]
     python =
-        3.9: py319, pytest
+        3.9: py39, pytest
         3.10: py310, pytest
         3.11: py311, pytest
         3.12: py312, pytest, mypy
@@ -165,5 +165,6 @@ legacy_tox_ini = """
     [testenv:mypy]
     deps =
         mypy
+        types-PyYAML
     commands = mypy src
 """

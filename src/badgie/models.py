@@ -126,8 +126,7 @@ class HookMatch:
 class ModuleProtocol(Protocol):
     """Modules implement a run function that accept context and returns iterable of Node objects."""
 
-    @staticmethod
-    def run(context: Context) -> Iterable[Node]:
+    def run(self, context: Context) -> Iterable[Node]:
         """Run context and return Nodes."""
         ...
 
