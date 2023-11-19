@@ -1,12 +1,18 @@
+"""Run other finders from finding specific files."""
+
+from __future__ import annotations
+
 import re
-from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Final
 
-from .. import tokens as to
-from ..models import Context, File
-from ..project import get_project_paths
+from badgie import tokens as to
+from badgie.models import Context, File
+from badgie.project import get_project_paths
 
-FILES = {
+if TYPE_CHECKING:
+    from pathlib import Path
+
+FILES: Final = {
     ".gitignore": {to.GIT},
     ".gitmodules": {to.GIT},
     ".gitattributes": {to.GIT},
@@ -20,20 +26,23 @@ FILES = {
     "meta/main.ya?ml": {to.ANSIBLE_GALAXY},
 }
 
-RE_FILES = {
+RE_FILES: Final = {
     re.compile(r"^" + pattern + r"$", re.IGNORECASE): tokens
     for pattern, tokens in FILES.items()
 }
 
 
-def match_file(path: Path) -> Optional[File]:
+def match_file(path: Path) -> File | None:
+    """Return matched File nodes from a given Path."""
     for regex, tokens in RE_FILES.items():
         match = regex.match(str(path))
         if match:
             return File(tokens=tokens, path=path, pattern=match.re.pattern)
+    return None
 
 
 def run(_context: Context) -> list[File]:
+    """Return File nodes from project paths."""
     nodes = []
     for path in get_project_paths():
         file = match_file(path)

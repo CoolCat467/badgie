@@ -1,6 +1,8 @@
-from .. import tokens as to
-from ..models import Badge
-from ._base import register_badges
+"""Gitlab badges."""
+
+from badgie import tokens as to
+from badgie.badges._base import register_badges
+from badgie.models import Badge
 
 register_badges(
     {
@@ -31,5 +33,5 @@ register_badges(
             image="https://img.shields.io/gitlab/v/release/{node.full_path}",
             weight=2,
         ),
-    }
+    },
 )

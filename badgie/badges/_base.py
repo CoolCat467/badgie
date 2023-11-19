@@ -1,4 +1,4 @@
-_BADGES = {}
+_BADGES: dict[str, object] = {}
 
 
 def register_badge(klass):

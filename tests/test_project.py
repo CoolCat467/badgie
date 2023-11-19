@@ -1,12 +1,16 @@
 import pytest
 
-from badgie.project import (ProjectRemote, get_match_group,
-                            get_project_remotes_from_text, match_remote_url)
+from badgie.project import (
+    ProjectRemote,
+    get_match_group,
+    get_project_remotes_from_text,
+    match_remote_url,
+)
 
 
 @pytest.mark.parametrize(
-    "url,scheme,user,host,path",
-    (
+    ("url", "scheme", "user", "host", "path"),
+    [
         (
             "https://gitlab.com/brettops/ansible/roles/kubectl.git",
             "https",
@@ -21,7 +25,7 @@ from badgie.project import (ProjectRemote, get_match_group,
             "gitlab.com",
             "brettops/ansible/roles/kubectl",
         ),
-    ),
+    ],
 )
 def test_get_project_remote(url, scheme, user, host, path):
     match = match_remote_url(url)

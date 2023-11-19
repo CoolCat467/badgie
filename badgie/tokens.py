@@ -1,15 +1,10 @@
+"""Tokens definition."""
+
 ANSIBLE = "ansible"
 ANSIBLE_COLLECTION = "ansible_collection"
 ANSIBLE_GALAXY = "ansible_galaxy"
 ANSIBLE_LINT = "ansible_lint"
 ANSIBLE_ROLE = "ansible_role"
-
-BRETTOPS = "brettops"
-BRETTOPS_CONTAINER = "brettops_container"
-BRETTOPS_PACKAGE = "brettops_package"
-BRETTOPS_PIPELINE = "brettops_pipeline"
-BRETTOPS_ROLE = "brettops_role"
-BRETTOPS_TOOL = "brettops_tool"
 
 DETECT_SECRETS = "detect_secrets"  # pragma: allowlist secret
 
@@ -51,6 +46,7 @@ PYTHON_MYPY = "python_mypy"
 PYTHON_PYPROJECT_TOML = "python_pyproject_toml"
 PYTHON_SETUP_CFG = "python_setup_cfg"
 PYTHON_SETUPTOOLS = "python_setuptools"
+PYTHON_RUFF = "python_ruff"
 
 SHELL_SHFMT = "shell_shfmt"
 

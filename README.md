@@ -9,15 +9,9 @@ https://gitlab.com/brettops/tools/badgie/
 
 <!-- BADGIE TIME -->
 
-[![brettops tool](https://img.shields.io/badge/brettops-tool-209cdf?labelColor=162d50)](https://brettops.io)
-[![pipeline status](https://img.shields.io/gitlab/pipeline-status/brettops/tools/badgie?branch=main)](https://gitlab.com/brettops/tools/badgie/-/commits/main)
-[![coverage report](https://img.shields.io/gitlab/pipeline-coverage/brettops/tools/badgie?branch=main)](https://gitlab.com/brettops/tools/badgie/-/commits/main)
-[![latest release](https://img.shields.io/gitlab/v/release/brettops/tools/badgie)](https://gitlab.com/brettops/tools/badgie/-/releases)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![code style: black](https://img.shields.io/badge/code_style-black-000000.svg)](https://github.com/psf/black)
-[![imports: isort](https://img.shields.io/badge/imports-isort-1674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <!-- END BADGIE TIME -->
 

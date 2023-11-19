@@ -37,7 +37,7 @@ dependencies = [
     "python-gitlab==4.1.1",
     "pyyaml==6.0.1",
     "termcolor==2.3.0",
-    "requests==2.30.0",
+    "requests==2.31.0",
 ]
 
 [tool.setuptools.dynamic]
@@ -100,38 +100,53 @@ select = [
     "A",  # flake8-builtins
     "ASYNC",  # flake8-async
     "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "COM",  # flake8-commas
+    "D",  # pydocstyle
     "E",  # Error
+    "EXE",  # flake8-executable
     "F",  # pyflakes
+    "FA",  # flake8-future-annotations
     "I",  # isort
+    "N",  # pep8-naming
+    "PIE",  # flake8-pie
+    "PT",  # flake8-pytest-style
+    "PYI",  # flake8-pyi
+    "Q",  # flake8-quotes
+    "RET",  # flake8-return
     "RUF",  # Ruff-specific rules
     "S",  # flake8-bandit
+    "SIM",  # flake8-simplify
+    "SLOT",  # flake8-slots
+    "TCH",  # flake8-type-checking
     "UP",  # pyupgrade
     "W",  # Warning
     "YTT",  # flake8-2020
-    "TCH",  # flake8-type-checking
-    "PYI",  # flake8-pyi
-    "UP",  # pyupgrade
 ]
 extend-ignore = [
     "E501",  # line-too-long
     "S101",  # use of assert for tests and type narrowing
-    "PYI041",  # redundant-numeric-union
+    "D203",  # blank line thing
+    "D204",  # blank line thing
+    "D211",  # no-blank-line-before-class
+    "D213",  # multi-line-summary-second-line
 ]
 
 [tool.ruff.per-file-ignores]
-"path/to/__init__.py" = [
-    'F401',
-    'E402'
+"tests/*" = [
+    "D100",  # undocumented-public-module
+    "D103",  # undocumented-public-function
 ]
 
 [tool.tox]
 legacy_tox_ini = """
     [tox]
-    envlist = py310, py311, py312, pytest, mypy
+    envlist = py319, py310, py311, py312, pytest, mypy
     isolated_build = false
 
     [gh-actions]
     python =
+        3.9: py319, pytest
         3.10: py310, pytest
         3.11: py311, pytest
         3.12: py312, pytest, mypy
