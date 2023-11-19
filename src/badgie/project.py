@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from badgie.models import ProjectRemote
 
 if TYPE_CHECKING:
-    from collections.abc import Final
+    from typing import Final
 
 REMOTES: Final = (
     r"(?P<user>git)@(?P<host>.*?):(?P<path>.*?)\.git",
