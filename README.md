@@ -10,6 +10,7 @@ https://gitlab.com/brettops/tools/badgie/
 <!-- BADGIE TIME -->
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CoolCat467/badgie/main.svg)](https://results.pre-commit.ci/latest/github/CoolCat467/badgie/main)
 [![code style: black](https://img.shields.io/badge/code_style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
@@ -59,7 +60,7 @@ Add the following to a `.pre-commit-config.yaml` file. Note the empty
 
 ```yaml
 repos:
-  - repo: https://gitlab.com/brettops/tools/badgie
+  - repo: https://github.com/CoolCat467/badgie
     rev: ""
     hooks:
       - id: badgie

@@ -5,7 +5,8 @@ from __future__ import annotations
 import yaml
 
 from badgie import tokens as to
-from badgie.models import Context, File, Hook, HookMatch
+from badgie.models import Context, File, Hook, HookMatch, PrecommitCI
+from badgie.project import get_project_head_branch, get_project_remotes
 
 HOOKS = {
     HookMatch(
@@ -78,9 +79,25 @@ def run(context: Context) -> list[Hook]:
     with open(pre_commit_config.path, encoding="utf-8") as file:
         data = yaml.safe_load(file)
     nodes = []
-    for repo in data["repos"]:
-        for hook in repo["hooks"]:
-            match = match_hook(repo["repo"], hook["id"])
+    for repo in data.get("repos", ()):
+        for hook in repo.get("hooks", ()):
+            match = match_hook(repo.get("repo", ""), hook.get("id", ""))
             if match:
                 nodes.append(match)
+    if data.get("ci"):
+        remotes = get_project_remotes()
+        head = get_project_head_branch()
+        if (
+            (origin := remotes.get("origin"))
+            and (fetch := origin.get("fetch"))
+            and (host_parts := fetch.host.split(".", 1))
+        ):
+            nodes.append(
+                PrecommitCI(
+                    tokens={to.PRE_COMMIT_CI},
+                    host=host_parts[0],
+                    path=fetch.path,
+                    head=head,
+                ),
+            )
     return nodes

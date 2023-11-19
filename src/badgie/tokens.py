@@ -25,6 +25,7 @@ GITLAB_RELEASE = "gitlab_release"
 PRE_COMMIT = "pre_commit"
 PRE_COMMIT_CONFIG = "pre_commit_config"
 PRE_COMMIT_HOOKS = "pre_commit_hooks"
+PRE_COMMIT_CI = "pre_commit_ci"
 
 PRETTIER = "prettier"
 

@@ -116,6 +116,15 @@ class Hook(Node):
 
 
 @define(frozen=True, slots=True, kw_only=True)
+class PrecommitCI(Node):
+    """Pre-commit.ci repo."""
+
+    host: str
+    path: str
+    head: str
+
+
+@define(frozen=True, slots=True, kw_only=True)
 class HookMatch:
     """Hook regex match."""
 

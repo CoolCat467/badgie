@@ -101,3 +101,12 @@ def get_project_root() -> Path:
             stdout=subprocess.PIPE,
         ).stdout.strip(),
     )
+
+
+def get_project_head_branch() -> str:
+    """Return git project HEAD branch name."""
+    return subprocess.run(
+        ("git", "rev-parse", "--abbrev-ref", "HEAD"),  # noqa: S603
+        text=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
