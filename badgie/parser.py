@@ -6,15 +6,17 @@ from attrs import define
 from .constants import PATTERN_END, PATTERN_START
 
 
+from __future__ import annotations
+
 @define
 class Token:
     value: str
     line: int
     column: int
-    type: Optional[str] = None
+    type: str | None = None
 
 
-def tokenize(text: str):
+def tokenize(text: str) -> Generator[Token, None, None]:
     token_specification = [
         ("BLOCK", r"```"),
         ("START", PATTERN_START),
@@ -32,7 +34,7 @@ def tokenize(text: str):
         yield Token(type=kind, value=value, line=line_num, column=column)
 
 
-def parse_text(text: str, badge_text: str = ""):
+def parse_text(text: str, badge_text: str = "") -> str:
     tokens = list(tokenize(text))
     output = ""
     in_block = False

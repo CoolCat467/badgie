@@ -1,9 +1,9 @@
 import re
-import subprocess  # nosec
+import subprocess
 from pathlib import Path
 from typing import Optional
 
-from .models import ProjectRemote
+from badgie.models import ProjectRemote
 
 REMOTES = [
     r"(?P<user>git)@(?P<host>.*?):(?P<path>.*?)\.git",
@@ -13,7 +13,7 @@ REMOTES = [
 RE_REMOTES = [re.compile(remote) for remote in REMOTES]
 
 
-def match_remote_url(url):
+def match_remote_url(url: str) -> re.Match[str] | None:
     for remote in RE_REMOTES:
         match = remote.match(url)
         if match:
@@ -21,14 +21,14 @@ def match_remote_url(url):
     return None
 
 
-def get_match_group(match, name) -> Optional[str]:
+def get_match_group(match: re.Match[str], name: str) -> str | None:
     try:
         return match.group(name)
     except IndexError:
         return None
 
 
-def get_project_remote(line) -> Optional[ProjectRemote]:
+def get_project_remote(line: str) -> ProjectRemote | None:
     name, parts = line.split("\t")
     url, type = parts.split(" ")
     type = type.replace("(", "").replace(")", "")
@@ -46,10 +46,12 @@ def get_project_remote(line) -> Optional[ProjectRemote]:
     )
 
 
-def get_project_remotes_from_text(text) -> dict[str, dict[str, ProjectRemote]]:
-    remotes = {}
+def get_project_remotes_from_text(text: str) -> dict[str, dict[str, ProjectRemote]]:
+    remotes: dict[str, dict[str, str]] = {}
     for line in text.splitlines():
         remote = get_project_remote(line)
+        if remote is None:
+            continue
         remotes.setdefault(remote.name, {})
         remotes[remote.name][remote.type] = remote
     return remotes

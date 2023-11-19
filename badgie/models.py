@@ -102,13 +102,14 @@ class Context:
     tokens_found: set[Node] = field(factory=set)
     tokens_processed: set[Node] = field(factory=set)
 
-    def add_nodes(self, nodes):
+    def add_nodes(self, nodes) -> None:
         for node in nodes:
             for token in node.tokens:
                 self.nodes.setdefault(token, [])
                 self.nodes[token].append(node)
             self.tokens_found |= node.tokens
 
-    def run(self, module):
+    def run(self, module) -> None:
         nodes = module.run(self)
         self.add_nodes(nodes)
+

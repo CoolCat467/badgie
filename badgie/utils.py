@@ -3,8 +3,10 @@ from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import urlencode, urlparse
 
+from typing import Generator
 
-def add_to_query(url: str, params: dict[str, str]):
+
+def add_to_query(url: str, params: dict[str, str]) -> str:
     parsed = urlparse(url)
 
     _params = {}
@@ -22,7 +24,7 @@ def add_to_query(url: str, params: dict[str, str]):
 
 
 @contextmanager
-def change_directory(path: Path):
+def change_directory(path: Path) -> Generator[None, None, None]:
     origin = Path().absolute()
     try:
         os.chdir(path)
