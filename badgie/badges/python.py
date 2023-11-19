@@ -1,3 +1,5 @@
+"""Pre-commit hook badges."""
+
 from badgie import tokens as to
 from badgie.badges._base import register_badges
 from badgie.models import Badge
@@ -45,8 +47,17 @@ register_badges(
             description="This project uses [mypy](https://github.com/python/mypy).",
             example="https://img.shields.io/badge/mypy-checked-2a6db2",
             title="Checked with mypy",
-            link="https://mypy-lang.org/",
+            link="https://mypy-lang.org",
             image="https://img.shields.io/badge/mypy-checked-2a6db2",
+            weight=20,
+        ),
+        to.PYTHON_RUFF: Badge(
+            name="python-ruff",
+            description="This project uses [ruff](https://github.com/astral-sh/ruff).",
+            example="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json",
+            title="Ruff",
+            link="https://github.com/astral-sh/ruff",
+            image="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json",
             weight=20,
         ),
     },

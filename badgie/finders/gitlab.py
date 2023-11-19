@@ -1,14 +1,18 @@
+"""Talk to gitlab's API."""
+
+from __future__ import annotations
+
 import json
 import os
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Final
+from typing import Any, Final
 
 import gitlab
 
 from badgie import tokens as to
-from badgie.models import Context, GitLabProject, Project
+from badgie.models import Context, GitLabProject, Project, Remote
 
 GITLAB_URL: Final = "https://gitlab.com"
 API_V4_URL: Final = f"{GITLAB_URL}/api/v4"
@@ -21,7 +25,10 @@ if private_token:
     HEADERS.update({"PRIVATE-TOKEN": private_token})
 
 
-def get_project(remote_path):
+def get_project(
+    remote_path: str,
+) -> tuple[gitlab.v4.objects.projects.Project, Project]:
+    """Return gitlab project and project node."""
     glproject = gl.projects.get(remote_path)
 
     project = Project(
@@ -38,18 +45,25 @@ def get_project(remote_path):
     return glproject, project
 
 
-def get_latest_pipeline(glproject):
+def get_latest_pipeline(
+    glproject: gitlab.v4.objects.projects.Project,
+) -> Any | None:
+    """Return latest pipeline or None."""
     try:
         return glproject.pipelines.get("latest", ref=glproject.default_branch)
     except gitlab.exceptions.GitlabGetError:
         return None
 
 
-def get_latest_release(project_id):
+def get_latest_release(project_id: str) -> Any | None:
+    """Return latest build data."""
     try:
         url = f"{API_V4_URL}/projects/{project_id}/releases/permalink/latest"
-        request = urllib.request.Request(url=url, headers=HEADERS)
-        response = urllib.request.urlopen(request)
+        request = urllib.request.Request(  # noqa: S310
+            url=url,
+            headers=HEADERS,
+        )
+        response = urllib.request.urlopen(request)  # noqa: S310
         content = response.read()
         return json.loads(content)
     except urllib.error.HTTPError:
@@ -57,7 +71,11 @@ def get_latest_release(project_id):
 
 
 def run(context: Context) -> list[GitLabProject]:
+    """Return list of GitLabProject objects."""
     remote = context.nodes[to.GITLAB][0]
+    assert isinstance(remote, Remote)
+    if remote.path is None:
+        return []
     glproject, project = get_project(remote.path)
     gltokens = set()
 

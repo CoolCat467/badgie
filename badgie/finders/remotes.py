@@ -1,3 +1,5 @@
+"""Remote code hosting services."""
+
 from __future__ import annotations
 
 from typing import Final
@@ -5,7 +7,6 @@ from typing import Final
 from badgie import tokens as to
 from badgie.models import Context, ProjectRemote, Remote, RemoteMatch
 from badgie.project import get_project_remotes
-
 
 REMOTES: Final = {
     RemoteMatch(host="github.com"): {to.GITHUB},

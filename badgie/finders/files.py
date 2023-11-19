@@ -1,10 +1,16 @@
+"""Run other finders from finding specific files."""
+
+from __future__ import annotations
+
 import re
-from pathlib import Path
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from badgie import tokens as to
 from badgie.models import Context, File
 from badgie.project import get_project_paths
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 FILES: Final = {
     ".gitignore": {to.GIT},
@@ -27,6 +33,7 @@ RE_FILES: Final = {
 
 
 def match_file(path: Path) -> File | None:
+    """Return matched File nodes from a given Path."""
     for regex, tokens in RE_FILES.items():
         match = regex.match(str(path))
         if match:
@@ -35,6 +42,7 @@ def match_file(path: Path) -> File | None:
 
 
 def run(_context: Context) -> list[File]:
+    """Return File nodes from project paths."""
     nodes = []
     for path in get_project_paths():
         file = match_file(path)

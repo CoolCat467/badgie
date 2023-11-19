@@ -1,3 +1,5 @@
+"""Main command line interface."""
+
 from __future__ import annotations
 
 import argparse
@@ -25,10 +27,12 @@ if TYPE_CHECKING:
 
 
 def to_markdown(badge: Badge) -> str:
+    """Return badge text in markdown."""
     return f"[![{badge.title}]({badge.image})]({badge.link})"
 
 
 def get_badge_text(badges: list[Badge], format_: str = "markdown") -> str:
+    """Return badge text given a list of badges."""
     lines = []
     for badge in badges:
         try:
@@ -196,7 +200,7 @@ def build_badge_context() -> Context:
 
 
 def main() -> None:
-    """Main cli entry point."""
+    """Handle command line interface."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-l",
@@ -258,7 +262,8 @@ def main() -> None:
     )
 
     for file in args.files:
-        text = open(file).read()
+        with open(file, encoding="utf-8") as file_handle:
+            text = file_handle.read()
         output = parse_text(text, badge_text=badge_text)
         if args.write:
             with open(file, "w") as handle:

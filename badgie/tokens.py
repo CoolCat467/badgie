@@ -46,6 +46,7 @@ PYTHON_MYPY = "python_mypy"
 PYTHON_PYPROJECT_TOML = "python_pyproject_toml"
 PYTHON_SETUP_CFG = "python_setup_cfg"
 PYTHON_SETUPTOOLS = "python_setuptools"
+PYTHON_RUFF = "python_ruff"
 
 SHELL_SHFMT = "shell_shfmt"
 

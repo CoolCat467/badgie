@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from attrs import define, field
 
@@ -44,6 +44,7 @@ class File(Node):
 @define(frozen=True, slots=True, kw_only=True)
 class OldRemote:
     """Old remote."""
+
     name: str
     prefix: str
 
@@ -108,7 +109,7 @@ class GitLabProject(Node):
 
 @define(frozen=True, slots=True, kw_only=True)
 class Hook(Node):
-    """Repo hook."""
+    """Pre-commit repo hook."""
 
     repo: str
     hook: str
@@ -120,6 +121,15 @@ class HookMatch:
 
     repo: str
     hook: str
+
+
+class ModuleProtocol(Protocol):
+    """Modules implement a run function that accept context and returns iterable of Node objects."""
+
+    @staticmethod
+    def run(context: Context) -> Iterable[Node]:
+        """Run context and return Nodes."""
+        ...
 
 
 @define(slots=True, kw_only=True)
@@ -140,7 +150,7 @@ class Context:
                 self.nodes[token].append(node)
             self.tokens_found |= node.tokens
 
-    def run(self, module) -> None:
+    def run(self, module: ModuleProtocol) -> None:
         """Run on module and add nodes."""
         nodes = module.run(self)
         self.add_nodes(nodes)

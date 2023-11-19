@@ -1,3 +1,5 @@
+"""Pre-commit badge."""
+
 from badgie import tokens as to
 from badgie.badges._base import register_badges
 from badgie.models import Badge
