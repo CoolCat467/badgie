@@ -1,11 +1,20 @@
-from pathlib import Path
-from typing import Optional, Union
+"""Dataclass object models."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from attrs import define, field
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+    from pathlib import Path
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class Badge:
+    """Badge."""
+
     name: str
     description: str
     example: str
@@ -19,46 +28,59 @@ class Badge:
 
 @define(frozen=True, slots=True, kw_only=True)
 class Node:
+    """Set of tokens."""
+
     tokens: set[str]
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class File(Node):
+    """File."""
+
     path: Path
     pattern: str
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class OldRemote:
+    """Old remote."""
     name: str
     prefix: str
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class RemoteMatch:
+    """Remote host regex match."""
+
     host: str
-    path_prefix: Optional[str] = None
+    path_prefix: str | None = None
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class Remote(Node):
+    """Remote."""
+
     host: str
-    path: Optional[str] = None
+    path: str | None = None
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class ProjectRemote:
+    """Git remote project."""
+
     name: str
-    type: str
+    type_: str
     url: str
-    scheme: Union[str, None]
-    user: Union[str, None]
+    scheme: str | None
+    user: str | None
     host: str
     path: str
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class Project:
+    """Git project."""
+
     local_path: Path
     url: str
     ref: str
@@ -73,6 +95,8 @@ class Project:
 
 @define(frozen=True, slots=True, kw_only=True)
 class GitLabProject(Node):
+    """Gitlab project."""
+
     url: str
     ref: str
     namespace: str
@@ -84,25 +108,32 @@ class GitLabProject(Node):
 
 @define(frozen=True, slots=True, kw_only=True)
 class Hook(Node):
+    """Repo hook."""
+
     repo: str
     hook: str
 
 
 @define(frozen=True, slots=True, kw_only=True)
 class HookMatch:
+    """Hook regex match."""
+
     repo: str
     hook: str
 
 
 @define(slots=True, kw_only=True)
 class Context:
+    """Project context."""
+
     path: Path
 
     nodes: dict[str, list[Node]] = field(factory=dict)
-    tokens_found: set[Node] = field(factory=set)
+    tokens_found: set[str] = field(factory=set)
     tokens_processed: set[Node] = field(factory=set)
 
-    def add_nodes(self, nodes) -> None:
+    def add_nodes(self, nodes: Iterable[Node]) -> None:
+        """Read nodes and add tokens."""
         for node in nodes:
             for token in node.tokens:
                 self.nodes.setdefault(token, [])
@@ -110,6 +141,6 @@ class Context:
             self.tokens_found |= node.tokens
 
     def run(self, module) -> None:
+        """Run on module and add nodes."""
         nodes = module.run(self)
         self.add_nodes(nodes)
-

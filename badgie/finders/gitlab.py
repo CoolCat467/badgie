@@ -3,14 +3,15 @@ import os
 import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Final
 
 import gitlab
 
-from .. import tokens as to
-from ..models import Context, GitLabProject, Project
+from badgie import tokens as to
+from badgie.models import Context, GitLabProject, Project
 
-GITLAB_URL = "https://gitlab.com"
-API_V4_URL = f"{GITLAB_URL}/api/v4"
+GITLAB_URL: Final = "https://gitlab.com"
+API_V4_URL: Final = f"{GITLAB_URL}/api/v4"
 
 gl = gitlab.Gitlab(private_token=os.environ.get("GITLAB_PRIVATE_TOKEN", None))
 

@@ -1,6 +1,6 @@
-from .. import tokens as to
-from ..models import Badge
-from ._base import register_badges
+from badgie import tokens as to
+from badgie.badges._base import register_badges
+from badgie.models import Badge
 
 register_badges(
     {
@@ -13,5 +13,5 @@ register_badges(
             image="https://img.shields.io/badge/code_style-prettier-ff69b4.svg",
             weight=20,
         ),
-    }
+    },
 )

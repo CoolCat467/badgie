@@ -9,8 +9,8 @@ from badgie.project import (
 
 
 @pytest.mark.parametrize(
-    "url,scheme,user,host,path",
-    (
+    ("url", "scheme", "user", "host", "path"),
+    [
         (
             "https://gitlab.com/brettops/ansible/roles/kubectl.git",
             "https",
@@ -25,7 +25,7 @@ from badgie.project import (
             "gitlab.com",
             "brettops/ansible/roles/kubectl",
         ),
-    ),
+    ],
 )
 def test_get_project_remote(url, scheme, user, host, path):
     match = match_remote_url(url)

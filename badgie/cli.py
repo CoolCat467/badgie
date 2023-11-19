@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import importlib
 import json
@@ -5,42 +7,50 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING
 
 from termcolor import colored
 
-from . import tokens as to
-from ._version import __version__
-from .badges._base import _BADGES
-from .finders import files, gitlab, pre_commit_config, remotes
-from .models import Badge, Context
-from .parser import parse_text
-from .project import get_project_root
-from .utils import add_to_query, change_directory
+from badgie import tokens as to
+from badgie._version import __version__
+from badgie.badges._base import _BADGES
+from badgie.finders import files, gitlab, pre_commit_config, remotes
+from badgie.models import Badge, Context
+from badgie.parser import parse_text
+from badgie.project import get_project_root
+from badgie.utils import add_to_query, change_directory
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
-def to_markdown(badge):
+def to_markdown(badge: Badge) -> str:
     return f"[![{badge.title}]({badge.image})]({badge.link})"
 
 
-def get_badge_text(badges, format="markdown"):
+def get_badge_text(badges: list[Badge], format_: str = "markdown") -> str:
     lines = []
     for badge in badges:
         try:
-            lines.append(getattr(badge, f"get_{format}")())
+            lines.append(getattr(badge, f"get_{format_}")())
         except AttributeError:
             lines.append(to_markdown(badge))
     return "\n".join(lines)
 
 
 class ListAction(argparse.Action):
+    """List supported badges action."""
+
+    __slots__ = ()
+
     def __init__(
         self,
-        option_strings,
-        dest=argparse.SUPPRESS,
-        default=argparse.SUPPRESS,
-        help="list supported badges and exit",
-    ):
+        option_strings: Sequence[str],
+        dest: str = argparse.SUPPRESS,
+        default: str = argparse.SUPPRESS,
+        help: str = "list supported badges and exit",  # noqa: A002  # `help` is shadowing a Python builtin
+    ) -> None:
+        """Initialize this action."""
         super().__init__(
             option_strings=option_strings,
             dest=dest,
@@ -49,26 +59,36 @@ class ListAction(argparse.Action):
             help=help,
         )
 
-    def __call__(self, parser, _namespace, _values, _option_string=None):
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        _namespace: argparse.Namespace,
+        _values: str | Sequence[object] | None,
+        _option_string: str | None = None,
+    ) -> None:
+        """Print badges and exit."""
         init_badges()
         for badge in sorted(_BADGES.values(), key=lambda x: x.name):
             print(
                 "{name}: {description}".format(
                     name=colored(badge.name, "yellow"),
                     description=badge.description.strip(),
-                )
+                ),
             )
         parser.exit()
 
 
 class DumpAction(argparse.Action):
+    """Dump badge data action."""
+
     def __init__(
         self,
-        option_strings,
-        dest=argparse.SUPPRESS,
-        default=argparse.SUPPRESS,
-        help="dump badge data",
-    ):
+        option_strings: Sequence[str],
+        dest: str = argparse.SUPPRESS,
+        default: str = argparse.SUPPRESS,
+        help: str = "dump badge data",  # noqa: A002  # `help` is shadowing a Python builtin
+    ) -> None:
+        """Initialize this action."""
         super().__init__(
             option_strings=option_strings,
             dest=dest,
@@ -77,52 +97,62 @@ class DumpAction(argparse.Action):
             help=help,
         )
 
-    def __call__(self, parser, _namespace, _values, _option_string=None):
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        _namespace: argparse.Namespace,
+        _values: str | Sequence[object] | None,
+        _option_string: str | None = None,
+    ) -> None:
+        """Print json dump of badges and exit."""
         init_badges()
         badges = []
         for badge in sorted(_BADGES.values(), key=lambda x: x.name):
             badges.append(
-                dict(
-                    name=badge.name,
-                    description=badge.description.strip(),
-                    example=badge.example,
-                )
+                {
+                    "name": badge.name,
+                    "description": badge.description.strip(),
+                    "example": badge.example,
+                },
             )
         from datetime import datetime
 
         print(
             json.dumps(
-                dict(
-                    generated=datetime.utcnow().isoformat(),
-                    badges=badges,
-                ),
+                {
+                    "generated": datetime.utcnow().isoformat(),
+                    "badges": badges,
+                },
                 indent=4,
-            )
+            ),
         )
         parser.exit()
 
 
-def init_badges():
+def init_badges() -> None:
+    """Read and import badge providers."""
     location = Path(__file__).parent
-    modules = list(location.glob("badges/[a-z]*.py"))
-    modules = [
-        os.path.splitext(
-            "badgie.{}".format(str(module.relative_to(location)).replace(os.sep, "."))
+    for module in location.glob("badges/[a-z]*.py"):
+        module_name = os.path.splitext(
+            "badgie.{}".format(
+                str(module.relative_to(location)).replace(os.sep, "."),
+            ),
         )[0]
-        for module in modules
-    ]
-    for module in modules:
-        logging.info("loading %s badge provider", module)
-        importlib.import_module(module)
+        logging.info("loading %s badge provider", module_name)
+        importlib.import_module(module_name)
 
 
-def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[Badge]:
+def assemble_badge_list(
+    context: Context,
+    style: str | None = None,
+) -> list[Badge]:
+    """Return badge list."""
     badges = []
     for token, nodelist in context.nodes.items():
         if token in _BADGES:
             badge = _BADGES[token]
             print(
-                "- adding a {name} badge".format(name=colored(badge.name, "yellow")),
+                "- adding a {colored(badge.name, 'yellow')} badge",
                 file=sys.stderr,
             )
             node = nodelist[0]
@@ -148,6 +178,7 @@ def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[B
 
 
 def build_badge_context() -> Context:
+    """Return badge context."""
     project_root = get_project_root()
 
     with change_directory(project_root):
@@ -164,12 +195,25 @@ def build_badge_context() -> Context:
         return context
 
 
-def main():
+def main() -> None:
+    """Main cli entry point."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--list", action=ListAction, help="list available badges")
-    parser.add_argument("--dump-badge-data", action=DumpAction, help="dump badge data")
     parser.add_argument(
-        "-w", "--write", action="store_true", help="write changes to the file"
+        "-l",
+        "--list",
+        action=ListAction,
+        help="list available badges",
+    )
+    parser.add_argument(
+        "--dump-badge-data",
+        action=DumpAction,
+        help="dump badge data",
+    )
+    parser.add_argument(
+        "-w",
+        "--write",
+        action="store_true",
+        help="write changes to the file",
     )
     parser.add_argument(
         "-s",
@@ -178,7 +222,10 @@ def main():
         help="change badge style",
     )
     parser.add_argument(
-        "-V", "--version", action="version", version=f"%(prog)s {__version__}"
+        "-V",
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     parser.add_argument("files", nargs="+", metavar="FILE", help="input files")
 
@@ -211,7 +258,7 @@ def main():
     )
 
     for file in args.files:
-        text = open(file, "r").read()
+        text = open(file).read()
         output = parse_text(text, badge_text=badge_text)
         if args.write:
             with open(file, "w") as handle:

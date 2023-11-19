@@ -1,15 +1,10 @@
+"""Tokens definition."""
+
 ANSIBLE = "ansible"
 ANSIBLE_COLLECTION = "ansible_collection"
 ANSIBLE_GALAXY = "ansible_galaxy"
 ANSIBLE_LINT = "ansible_lint"
 ANSIBLE_ROLE = "ansible_role"
-
-BRETTOPS = "brettops"
-BRETTOPS_CONTAINER = "brettops_container"
-BRETTOPS_PACKAGE = "brettops_package"
-BRETTOPS_PIPELINE = "brettops_pipeline"
-BRETTOPS_ROLE = "brettops_role"
-BRETTOPS_TOOL = "brettops_tool"
 
 DETECT_SECRETS = "detect_secrets"  # pragma: allowlist secret
 
@@ -61,4 +56,6 @@ TERRAFORM_WORKSPACE = "terraform_workspace"
 
 # full list of tokens
 
-TOKENS = [token for token in dict(globals()).items() if not token[0].startswith("_")]
+TOKENS = [
+    token for token in dict(globals()).items() if not token[0].startswith("_")
+]

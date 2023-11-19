@@ -1,12 +1,12 @@
 import re
 from pathlib import Path
-from typing import Optional
+from typing import Final
 
-from .. import tokens as to
-from ..models import Context, File
-from ..project import get_project_paths
+from badgie import tokens as to
+from badgie.models import Context, File
+from badgie.project import get_project_paths
 
-FILES = {
+FILES: Final = {
     ".gitignore": {to.GIT},
     ".gitmodules": {to.GIT},
     ".gitattributes": {to.GIT},
@@ -20,17 +20,18 @@ FILES = {
     "meta/main.ya?ml": {to.ANSIBLE_GALAXY},
 }
 
-RE_FILES = {
+RE_FILES: Final = {
     re.compile(r"^" + pattern + r"$", re.IGNORECASE): tokens
     for pattern, tokens in FILES.items()
 }
 
 
-def match_file(path: Path) -> Optional[File]:
+def match_file(path: Path) -> File | None:
     for regex, tokens in RE_FILES.items():
         match = regex.match(str(path))
         if match:
             return File(tokens=tokens, path=path, pattern=match.re.pattern)
+    return None
 
 
 def run(_context: Context) -> list[File]:

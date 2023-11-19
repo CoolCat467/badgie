@@ -1,5 +1,9 @@
-PATTERN = r"BADGIE\s+TIME"
+from __future__ import annotations
 
-PATTERN_START = r"<!--\s+" + PATTERN + r"\s+-->"
+from typing import Final
 
-PATTERN_END = r"<!--\s+END\s+" + PATTERN + r"\s+-->"
+PATTERN: Final = r"BADGIE\s+TIME"
+
+PATTERN_START: Final = r"<!--\s+" + PATTERN + r"\s+-->"
+
+PATTERN_END: Final = r"<!--\s+END\s+" + PATTERN + r"\s+-->"

@@ -1,12 +1,14 @@
+"""Utility functions."""
+
 import os
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import urlencode, urlparse
 
-from typing import Generator
-
 
 def add_to_query(url: str, params: dict[str, str]) -> str:
+    """Return url but with urlencoded query adding given parameters."""
     parsed = urlparse(url)
 
     _params = {}
@@ -25,6 +27,7 @@ def add_to_query(url: str, params: dict[str, str]) -> str:
 
 @contextmanager
 def change_directory(path: Path) -> Generator[None, None, None]:
+    """Temporarily change directory to a given path."""
     origin = Path().absolute()
     try:
         os.chdir(path)
