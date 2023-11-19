@@ -1,11 +1,7 @@
 import pytest
 
-from badgie.project import (
-    ProjectRemote,
-    get_match_group,
-    get_project_remotes_from_text,
-    match_remote_url,
-)
+from badgie.project import (ProjectRemote, get_match_group,
+                            get_project_remotes_from_text, match_remote_url)
 
 
 @pytest.mark.parametrize(

@@ -107,7 +107,9 @@ def init_badges():
     modules = list(location.glob("badges/[a-z]*.py"))
     modules = [
         os.path.splitext(
-            "badgie.{}".format(str(module.relative_to(location)).replace(os.sep, "."))
+            "badgie.{}".format(
+                str(module.relative_to(location)).replace(os.sep, ".")
+            )
         )[0]
         for module in modules
     ]
@@ -116,13 +118,17 @@ def init_badges():
         importlib.import_module(module)
 
 
-def assemble_badge_list(context: Context, style: Optional[str] = None) -> list[Badge]:
+def assemble_badge_list(
+    context: Context, style: Optional[str] = None
+) -> list[Badge]:
     badges = []
     for token, nodelist in context.nodes.items():
         if token in _BADGES:
             badge = _BADGES[token]
             print(
-                "- adding a {name} badge".format(name=colored(badge.name, "yellow")),
+                "- adding a {name} badge".format(
+                    name=colored(badge.name, "yellow")
+                ),
                 file=sys.stderr,
             )
             node = nodelist[0]
@@ -166,8 +172,12 @@ def build_badge_context() -> Context:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--list", action=ListAction, help="list available badges")
-    parser.add_argument("--dump-badge-data", action=DumpAction, help="dump badge data")
+    parser.add_argument(
+        "-l", "--list", action=ListAction, help="list available badges"
+    )
+    parser.add_argument(
+        "--dump-badge-data", action=DumpAction, help="dump badge data"
+    )
     parser.add_argument(
         "-w", "--write", action="store_true", help="write changes to the file"
     )

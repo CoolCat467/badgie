@@ -20,7 +20,9 @@ REMOTES = {
     RemoteMatch(host="gitlab.com", path_prefix="brettops/pipelines"): {
         to.BRETTOPS_PIPELINE
     },
-    RemoteMatch(host="gitlab.com", path_prefix="brettops/tools"): {to.BRETTOPS_TOOL},
+    RemoteMatch(host="gitlab.com", path_prefix="brettops/tools"): {
+        to.BRETTOPS_TOOL
+    },
 }
 
 
@@ -29,10 +31,16 @@ def match_remote(project_remote: ProjectRemote) -> Optional[Remote]:
     for match, tokens in REMOTES.items():
         if project_remote.host != match.host:
             continue
-        if match.path_prefix and not project_remote.path.startswith(match.path_prefix):
+        if match.path_prefix and not project_remote.path.startswith(
+            match.path_prefix
+        ):
             continue
         nodes.append(
-            Remote(tokens=tokens, host=project_remote.host, path=project_remote.path)
+            Remote(
+                tokens=tokens,
+                host=project_remote.host,
+                path=project_remote.path,
+            )
         )
     return nodes
 
