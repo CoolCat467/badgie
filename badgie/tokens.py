@@ -61,4 +61,6 @@ TERRAFORM_WORKSPACE = "terraform_workspace"
 
 # full list of tokens
 
-TOKENS = [token for token in dict(globals()).items() if not token[0].startswith("_")]
+TOKENS = [
+    token for token in dict(globals()).items() if not token[0].startswith("_")
+]
