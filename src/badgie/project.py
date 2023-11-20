@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -141,6 +142,7 @@ def get_project_head_branches() -> dict[str, str]:
 def get_project_head_branch() -> str | None:
     """Return the git project HEAD branch name of the first origin."""
     heads = get_project_head_branches()
+    print(f"{os.environ['PRE_COMMIT_REMOTE_BRANCH'] = }")
     if not heads:
         return None
     return heads[next(iter(heads))]
