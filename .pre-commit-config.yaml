@@ -37,7 +37,7 @@ repos:
         types: [file]
         types_or: [python, pyi, toml]
   - repo: https://github.com/CoolCat467/badgie
-    rev: v0.9.3
+    rev: bb7bf259eca1ec935cc089a35a0ab8bb14eb3c51
     hooks:
       - id: badgie
   - repo: https://github.com/codespell-project/codespell
