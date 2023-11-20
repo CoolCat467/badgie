@@ -138,7 +138,9 @@ def get_project_head_branches() -> dict[str, str]:
     return heads
 
 
-def get_project_head_branch() -> str:
+def get_project_head_branch() -> str | None:
     """Return the git project HEAD branch name of the first origin."""
     heads = get_project_head_branches()
+    if not heads:
+        return None
     return heads[next(iter(heads))]

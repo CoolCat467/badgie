@@ -86,9 +86,9 @@ def run(context: Context) -> list[Hook | PrecommitCI]:
                 nodes.append(match)
     if data.get("ci"):
         remotes = get_project_remotes()
-        head = get_project_head_branch()
         if (
-            (origin := remotes.get("origin"))
+            (head := get_project_head_branch())
+            and (origin := remotes.get("origin"))
             and (fetch := origin.get("fetch"))
             and (host_parts := fetch.host.split(".", 1))
         ):
