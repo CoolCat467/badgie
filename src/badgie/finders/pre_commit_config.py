@@ -72,13 +72,13 @@ def match_hook(repo: str, hook: str) -> Hook | None:
     return None
 
 
-def run(context: Context) -> list[Hook]:
+def run(context: Context) -> list[Hook | PrecommitCI]:
     """Return list of pre-commit config hooks from context."""
     pre_commit_config = context.nodes[to.PRE_COMMIT_CONFIG][0]
     assert isinstance(pre_commit_config, File)
     with open(pre_commit_config.path, encoding="utf-8") as file:
         data = yaml.safe_load(file)
-    nodes = []
+    nodes: list[Hook | PrecommitCI] = []
     for repo in data.get("repos", ()):
         for hook in repo.get("hooks", ()):
             match = match_hook(repo.get("repo", ""), hook.get("id", ""))

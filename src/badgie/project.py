@@ -103,10 +103,42 @@ def get_project_root() -> Path:
     )
 
 
+def get_project_remote_names() -> list[str]:
+    """Return git remote names."""
+    return (
+        subprocess.run(
+            ("git", "remote", "show"),  # noqa: S603
+            text=True,
+            stdout=subprocess.PIPE,
+        )
+        .stdout.strip()
+        .split()
+    )
+
+
+def get_project_head_branches() -> dict[str, str]:
+    """Return git project HEAD branch names for each origin.
+
+    ex. {"origin": "main"}
+    """
+    remote_names = get_project_remote_names()
+    heads: dict[str, str] = {}
+    for remote_name in remote_names:
+        head = subprocess.run(
+            (  # noqa: S603
+                "git",
+                "rev-parse",
+                "--abbrev-ref",
+                f"{remote_name}/HEAD",
+            ),
+            text=True,
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+        heads[remote_name] = head.removeprefix(f"{remote_name}/")
+    return heads
+
+
 def get_project_head_branch() -> str:
-    """Return git project HEAD branch name."""
-    return subprocess.run(
-        ("git", "rev-parse", "--abbrev-ref", "HEAD"),  # noqa: S603
-        text=True,
-        stdout=subprocess.PIPE,
-    ).stdout.strip()
+    """Return the git project HEAD branch name of the first origin."""
+    heads = get_project_head_branches()
+    return heads[next(iter(heads))]

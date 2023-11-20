@@ -22,7 +22,7 @@ register_badges(
             title="pre-commit.ci status",
             link="https://results.pre-commit.ci/latest/{node.host}/{node.path}/{node.head}",
             image="https://results.pre-commit.ci/badge/{node.host}/{node.path}/{node.head}.svg",
-            weight=10,
+            weight=9,
         ),
     },
 )
