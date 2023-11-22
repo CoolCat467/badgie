@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Final
 
 from badgie import tokens as to
@@ -38,7 +39,9 @@ def run(_context: Context) -> list[Remote]:
     """Return list of remote code servers."""
     remotes = get_project_remotes()
     remote = remotes.get("origin", {}).get("fetch", None)
+    print(f"[DEBUG] {os.environ.get('PRE_COMMIT') = }")
+    print(f"[DEBUG] {os.environ.get('PRE_COMMIT_REMOTE_BRANCH') = }")
+    print(f"[DEBUG] {os.environ.get('PRE_COMMIT_REMOTE_NAME') = }")
     if remote is None:
-        print(f"[DEBUG] {remotes = }")
         return []
     return match_remote(remote)
