@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import os
 import re
-import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+import pre_commit.git as git
 
 from badgie.models import ProjectRemote
 
@@ -73,48 +73,24 @@ def get_project_remotes_from_text(
 
 def get_project_remotes() -> dict[str, dict[str, ProjectRemote]]:
     """Return project remotes from git."""
-    process = subprocess.run(
-        ("git", "remote", "-v"),  # noqa: S603
-        text=True,
-        capture_output=True,
-    )
-    return get_project_remotes_from_text(process.stdout)
+    _code, stdout, _stderr = git.cmd_output("git", "remote", "-v")
+    return get_project_remotes_from_text(stdout)
 
 
 def get_project_paths() -> list[Path]:
     """Return list of project files from git."""
-    return [
-        Path(path)
-        for path in subprocess.run(
-            ("git", "ls-files"),  # noqa: S603
-            text=True,
-            stdout=subprocess.PIPE,
-        ).stdout.splitlines()
-    ]
+    return [Path(path) for path in git.get_all_files()]
 
 
 def get_project_root() -> Path:
     """Return git project root path."""
-    return Path(
-        subprocess.run(
-            ("git", "rev-parse", "--show-toplevel"),  # noqa: S603
-            text=True,
-            stdout=subprocess.PIPE,
-        ).stdout.strip(),
-    )
+    return Path(git.get_project_root())
 
 
 def get_project_remote_names() -> list[str]:
     """Return git remote names."""
-    return (
-        subprocess.run(
-            ("git", "remote", "show"),  # noqa: S603
-            text=True,
-            stdout=subprocess.PIPE,
-        )
-        .stdout.strip()
-        .split()
-    )
+    _code, stdout, _stderr = git.cmd_output("git", "remote", "show")
+    return stdout.split()
 
 
 def get_project_head_branches() -> dict[str, str]:
@@ -125,16 +101,13 @@ def get_project_head_branches() -> dict[str, str]:
     remote_names = get_project_remote_names()
     heads: dict[str, str] = {}
     for remote_name in remote_names:
-        head = subprocess.run(
-            (  # noqa: S603
-                "git",
-                "rev-parse",
-                "--abbrev-ref",
-                f"{remote_name}/HEAD",
-            ),
-            text=True,
-            stdout=subprocess.PIPE,
-        ).stdout.strip()
+        _code, stdout, _stderr = git.cmd_output(
+            "git",
+            "rev-parse",
+            "--abbrev-ref",
+            f"{remote_name}/HEAD",
+        )
+        head = stdout.strip()
         heads[remote_name] = head.removeprefix(f"{remote_name}/")
     return heads
 
@@ -142,7 +115,6 @@ def get_project_head_branches() -> dict[str, str]:
 def get_project_head_branch() -> str | None:
     """Return the git project HEAD branch name of the first origin."""
     heads = get_project_head_branches()
-    print(f"{os.environ.get('PRE_COMMIT_REMOTE_BRANCH') = }")
     if not heads:
         return None
     return heads[next(iter(heads))]
