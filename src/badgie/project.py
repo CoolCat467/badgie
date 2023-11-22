@@ -84,13 +84,12 @@ def get_project_paths() -> list[Path]:
 
 def get_project_root() -> Path:
     """Return git project root path."""
-    return Path(git.get_project_root())
+    return Path(git.get_root())
 
 
 def get_project_remote_names() -> list[str]:
     """Return git remote names."""
-    _code, stdout, _stderr = git.cmd_output("git", "remote", "show")
-    return stdout.split()
+    return list(get_project_remotes())
 
 
 def get_project_head_branches() -> dict[str, str]:
