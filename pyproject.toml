@@ -7,7 +7,7 @@ name = "badgie"
 dynamic = ["version"]
 authors = [
   { name="Brett Weir", email="brett@brettops.io" },
-  { name="CoolCat467" },
+  { name="CoolCat467", email="CoolCat467@duck.com" },
 ]
 description = "Add all the badges with Badgie!"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -18,6 +18,7 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -80,16 +81,16 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-[tool.black]
-line-length = 79
-target-version = ['py39']
-
 [tool.ruff.isort]
 combine-as-imports = true
 
 [tool.pycln]
 all = true
 disable_all_dunder_policy = true
+
+[tool.black]
+line-length = 79
+target-version = ['py39']
 
 [tool.ruff]
 line-length = 79
@@ -136,6 +137,13 @@ extend-ignore = [
 "tests/*" = [
     "D100",  # undocumented-public-module
     "D103",  # undocumented-public-function
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "__init__.py",
 ]
 
 [tool.tox]

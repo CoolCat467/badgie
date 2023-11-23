@@ -3,6 +3,7 @@ ci:
   autofix_prs: true
   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: quarterly
+  skip: [badgie]  # Getting origins doesn't work on ci
   submodules: false
 
 repos:
@@ -26,7 +27,7 @@ repos:
         args: [--config=pyproject.toml, src]
         types: [file]
         types_or: [python, pyi]
-  - repo: https://github.com/psf/black
+  - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.10.1
     hooks:
       - id: black

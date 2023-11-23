@@ -20,13 +20,13 @@ HOOKS = {
         to.PYTHON_BLACK,
     },
     HookMatch(
-        repo="https://github.com/psf/black-pre-commit-mirror",
+        repo="https://github.com/psf/black-pre-commit-mirror/",
         hook="black",
     ): {
         to.PYTHON_BLACK,
     },
     HookMatch(
-        repo="https://github.com/psf/black-pre-commit-mirror",
+        repo="https://github.com/psf/black-pre-commit-mirror/",
         hook="black-jupyter",
     ): {
         to.PYTHON_BLACK,
@@ -84,20 +84,18 @@ def run(context: Context) -> list[Hook | PrecommitCI]:
             match = match_hook(repo.get("repo", ""), hook.get("id", ""))
             if match:
                 nodes.append(match)
-    if data.get("ci"):
-        remotes = get_project_remotes()
-        if (
-            (head := get_project_head_branch())
-            and (origin := remotes.get("origin"))
-            and (fetch := origin.get("fetch"))
-            and (host_parts := fetch.host.split(".", 1))
-        ):
-            nodes.append(
-                PrecommitCI(
-                    tokens={to.PRE_COMMIT_CI},
-                    host=host_parts[0],
-                    path=fetch.path,
-                    head=head,
-                ),
-            )
+    if (
+        data.get("ci")
+        and (head := get_project_head_branch())
+        and (fetch := get_project_remotes().get("origin", {}).get("fetch"))
+        and (host_parts := fetch.host.split(".", 1))
+    ):
+        nodes.append(
+            PrecommitCI(
+                tokens={to.PRE_COMMIT_CI},
+                host=host_parts[0],
+                path=fetch.path,
+                head=head,
+            ),
+        )
     return nodes
