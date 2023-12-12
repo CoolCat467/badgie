@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pre_commit.git as git
+from pre_commit.util import CalledProcessError
 
 from badgie.models import ProjectRemote
 
@@ -100,12 +101,15 @@ def get_project_head_branches() -> dict[str, str]:
     remote_names = get_project_remote_names()
     heads: dict[str, str] = {}
     for remote_name in remote_names:
-        _code, stdout, _stderr = git.cmd_output(
-            "git",
-            "rev-parse",
-            "--abbrev-ref",
-            f"{remote_name}/HEAD",
-        )
+        try:
+            _code, stdout, _stderr = git.cmd_output(
+                "git",
+                "rev-parse",
+                "--abbrev-ref",
+                f"{remote_name}/HEAD",
+            )
+        except CalledProcessError:
+            continue
         head = stdout.strip()
         heads[remote_name] = head.removeprefix(f"{remote_name}/")
     return heads
