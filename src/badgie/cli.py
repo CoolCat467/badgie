@@ -9,8 +9,9 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final, ParamSpec, TypeVar
 
+from identify import identify
 from termcolor import colored
 
 from badgie import tokens as to
@@ -20,15 +21,45 @@ from badgie.finders import files, gitlab, pre_commit_config, remotes
 from badgie.models import Badge, Context
 from badgie.parser import parse_text
 from badgie.project import get_project_root
-from badgie.utils import add_to_query, change_directory
+from badgie.utils import add_to_query, change_directory, combine_end
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
 
 
+IGNORE_TAGS: Final = {
+    identify.FILE,
+    identify.NON_EXECUTABLE,
+    identify.EXECUTABLE,
+}
+
+P = ParamSpec("P")
+T = TypeVar("T")
+
+HANDLED_FILE_FORMATS: dict[str, Callable[[Badge], str]] = {}
+
+
+def format_handle(format_: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
+    """Return decorator that will remember handled file format functions."""
+
+    def decorator(function: Callable[P, T]) -> Callable[P, T]:
+        return HANDLED_FILE_FORMATS.setdefault(format_, function)
+
+    return decorator
+
+
+@format_handle("markdown")
 def to_markdown(badge: Badge) -> str:
     """Return badge text in markdown."""
     return f"[![{badge.title}]({badge.image})]({badge.link})"
+
+
+@format_handle("rst")
+def to_rst(badge: Badge) -> str:
+    """Return badge text in reStructuredText."""
+    return f""".. image:: {badge.image}
+   :target: {badge.link}
+   :alt: {badge.title}"""
 
 
 def get_badge_text(badges: list[Badge], format_: str = "markdown") -> str:
@@ -38,7 +69,16 @@ def get_badge_text(badges: list[Badge], format_: str = "markdown") -> str:
         try:
             lines.append(getattr(badge, f"get_{format_}")())
         except AttributeError:
-            lines.append(to_markdown(badge))
+            if format_ in HANDLED_FILE_FORMATS:
+                lines.append(HANDLED_FILE_FORMATS[format_](badge))
+            else:
+                valid = combine_end(
+                    map(repr, HANDLED_FILE_FORMATS),
+                    final="or",
+                )
+                raise ValueError(
+                    f"Invalid format {format_!r}, expected {valid}.",
+                ) from None
     return "\n".join(lines)
 
 
@@ -84,6 +124,8 @@ class ListAction(argparse.Action):
 
 class DumpAction(argparse.Action):
     """Dump badge data action."""
+
+    __slots__ = ()
 
     def __init__(
         self,
@@ -251,7 +293,6 @@ def main() -> None:
 
     context = build_badge_context()
     badges = assemble_badge_list(context, style=args.style)
-    badge_text = get_badge_text(badges=badges)
 
     print(
         colored("\nThat's like", "white", attrs=["bold"]),
@@ -261,7 +302,33 @@ def main() -> None:
         file=sys.stderr,
     )
 
+    badge_formats: dict[str, str] = {}
+    valid_formats = set(HANDLED_FILE_FORMATS)
+    got_invalid: set[str] = set()
+
     for file in args.files:
+        tags = identify.tags_from_path(file) - IGNORE_TAGS
+
+        valid_tags = tags & valid_formats
+        if not valid_tags:
+            got_invalid |= tags
+            continue
+
+        format_ = sorted(valid_tags)[0]
+
+        if len(valid_tags) > 1:
+            formats = combine_end(map(repr, valid_tags), final="and")
+            colored(
+                f"Warning: Duplicate acceptable formats for {file!r}: {formats}",
+                "red",
+                attrs=["bold"],
+            )
+            colored(f"Defaulting to {format_!r}.", "grey", attrs=["bold"])
+
+        badge_text = badge_formats.setdefault(
+            format_,
+            get_badge_text(badges=badges, format_=format_),
+        )
         with open(file, encoding="utf-8") as file_handle:
             text = file_handle.read()
         output = parse_text(text, badge_text=badge_text)
@@ -270,3 +337,15 @@ def main() -> None:
                 handle.write(output)
         else:
             print(output)
+
+    if got_invalid:
+        formats = combine_end(map(repr, sorted(got_invalid)), final="and/or")
+        print(
+            colored(
+                f"\nUnhandled input file format(s): {formats}",
+                "red",
+                attrs=["bold"],
+            ),
+            file=sys.stderr,
+        )
+        sys.exit(1)

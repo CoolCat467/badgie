@@ -1,10 +1,15 @@
 """Utility functions."""
 
+from __future__ import annotations
+
 import os
-from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode, urlparse
+
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable
 
 
 def add_to_query(url: str, params: dict[str, str]) -> str:
@@ -34,3 +39,13 @@ def change_directory(path: Path) -> Generator[None, None, None]:
         yield
     finally:
         os.chdir(origin)
+
+
+def combine_end(data: Iterable[str], final: str = "and") -> str:
+    """Return comma separated string of list of strings with last item phrased properly."""
+    data = list(data)
+    if len(data) >= 2:
+        data[-1] = f"{final} {data[-1]}"
+    if len(data) > 2:
+        return ", ".join(data)
+    return " ".join(data)
