@@ -32,13 +32,14 @@ classifiers = [
     "Operating System :: OS Independent",
     "Typing :: Typed",
 ]
-keywords = ["badge", "template", "markdown"]
+keywords = ["badge", "template", "markdown", "rst"]
 dependencies = [
     "attrs==23.1.0",
     "python-gitlab==4.2.0",
     "pyyaml==6.0.1",
     "termcolor==2.4.0",
-    "pre-commit==3.6.0",
+    "pre-commit~=3.6.0",
+    "identify~=2.5.33",
 ]
 
 [tool.setuptools.dynamic]

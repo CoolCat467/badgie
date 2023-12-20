@@ -9,7 +9,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Final, ParamSpec, TypeVar
+from typing import TYPE_CHECKING, Final
 
 from identify import identify
 from termcolor import colored
@@ -33,16 +33,15 @@ IGNORE_TAGS: Final = {
     identify.EXECUTABLE,
 }
 
-P = ParamSpec("P")
-T = TypeVar("T")
-
 HANDLED_FILE_FORMATS: dict[str, Callable[[Badge], str]] = {}
 
 
-def format_handle(format_: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
+def format_handle(
+    format_: str,
+) -> Callable[[Callable[[Badge], str]], Callable[[Badge], str]]:
     """Return decorator that will remember handled file format functions."""
 
-    def decorator(function: Callable[P, T]) -> Callable[P, T]:
+    def decorator(function: Callable[[Badge], str]) -> Callable[[Badge], str]:
         return HANDLED_FILE_FORMATS.setdefault(format_, function)
 
     return decorator
