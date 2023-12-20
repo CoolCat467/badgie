@@ -1,12 +1,5 @@
 # Badgie Fork
 
-## This is a fork
-
-The original project can be found here:
-https://gitlab.com/brettops/tools/badgie/
-
-# Original readme:
-
 <!-- BADGIE TIME -->
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CoolCat467/badgie/main.svg)](https://results.pre-commit.ci/latest/github/CoolCat467/badgie/main)
@@ -18,6 +11,11 @@ https://gitlab.com/brettops/tools/badgie/
 
 Add all the badges with Badgie!
 
+### This is a fork
+
+The original project can be found here:
+https://gitlab.com/brettops/tools/badgie/
+
 ## Using Badgie
 
 Install Badgie:
@@ -26,11 +24,18 @@ Install Badgie:
 pip install badgie
 ```
 
-Add Badgie tags to your README:
+Add Badgie tags to your README.md:
 
 ```md
 <!-- BADGIE TIME -->
 <!-- END BADGIE TIME -->
+```
+
+Add Badgie tags to your README.rst:
+
+```rst
+.. <!-- BADGIE TIME -->
+.. <!-- END BADGIE TIME -->
 ```
 
 Run Badgie:
@@ -55,13 +60,12 @@ And enjoy magic badges:
 Badgie can be used as a pre-commit hook, so you can get fresh badges on every
 commit.
 
-Add the following to a `.pre-commit-config.yaml` file. Note the empty
-`rev` tag:
+Add the following to your `.pre-commit-config.yaml` file.
 
 ```yaml
 repos:
   - repo: https://github.com/CoolCat467/badgie
-    rev: ""
+    rev: v0.9.5
     hooks:
       - id: badgie
 ```
