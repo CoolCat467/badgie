@@ -16,5 +16,8 @@ def test_register_badge() -> None:
         weight=3,
     )
     assert badge not in base._BADGES.values()
-    assert base.register_badge(badge) is badge
-    assert base._BADGES[name] is badge
+    try:
+        assert base.register_badge(badge) is badge
+        assert base._BADGES[name] is badge
+    finally:
+        base._BADGES.pop(name)
