@@ -38,8 +38,8 @@ dependencies = [
     "python-gitlab~=4.4.0",
     "pyyaml~=6.0.1",
     "termcolor~=2.4.0",
-    "pre-commit~=3.6.0",
-    "identify~=2.5.33",
+    "pre-commit~=3.6.2",
+    "identify~=2.5.35",
 ]
 
 [tool.setuptools.dynamic]
