@@ -34,10 +34,10 @@ classifiers = [
 ]
 keywords = ["badge", "template", "markdown", "rst"]
 dependencies = [
-    "attrs==23.2.0",
-    "python-gitlab==4.4.0",
-    "pyyaml==6.0.1",
-    "termcolor==2.4.0",
+    "attrs~=23.2.0",
+    "python-gitlab~=4.4.0",
+    "pyyaml~=6.0.1",
+    "termcolor~=2.4.0",
     "pre-commit~=3.6.0",
     "identify~=2.5.33",
 ]
@@ -76,7 +76,7 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 combine-as-imports = true
 
 [tool.pycln]
@@ -92,12 +92,15 @@ line-length = 79
 fix = true
 
 include = ["*.py", "*.pyi", "**/pyproject.toml"]
+
+[tool.ruff.lint]
 select = [
     "A",     # flake8-builtins
     "ASYNC", # flake8-async
     "B",     # flake8-bugbear
     "C4",    # flake8-comprehensions
     "COM",   # flake8-commas
+    "CPY",   # flake8-copyright
     "D",     # pydocstyle
     "E",     # Error
     "EXE",   # flake8-executable
@@ -115,23 +118,27 @@ select = [
     "SIM",   # flake8-simplify
     "SLOT",  # flake8-slots
     "TCH",   # flake8-type-checking
+    "TRIO",  # flake8-trio
     "UP",    # pyupgrade
     "W",     # Warning
     "YTT",   # flake8-2020
 ]
 extend-ignore = [
-    "E501",  # line-too-long
-    "S101",  # use of assert for tests and type narrowing
-    "D203",  # blank line thing
-    "D204",  # blank line thing
-    "D211",  # no-blank-line-before-class
-    "D213",  # multi-line-summary-second-line
+    "D203",   # One blank line before class
+    "D204",   # blank line thing
+    "D211",   # no-blank-line-before-class
+    "D213",   # multi-line-summary-second-line
+    "D417",   # "Missing argument descriptions"
+    "E501",   # line-too-long
+    "S101",   # use of assert for tests and type narrowing
+    "SIM117", # Use multiple with statements at the same time
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "D100",  # undocumented-public-module
     "D103",  # undocumented-public-function
+    "D107",  # Missing docstring
 ]
 
 [tool.pytest.ini_options]
@@ -178,7 +185,7 @@ legacy_tox_ini = """
 
     [gh-actions]
     python =
-        3.9: py39, pytest
+        3.9: py39, pytest, mypy
         3.10: py310, pytest
         3.11: py311, pytest
         3.12: py312, pytest, mypy
