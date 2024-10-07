@@ -1,4 +1,5 @@
 import pytest
+
 from badgie.project import (
     ProjectRemote,
     get_match_group,
