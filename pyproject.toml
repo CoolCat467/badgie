@@ -34,7 +34,7 @@ classifiers = [
 ]
 keywords = ["badge", "template", "markdown", "rst"]
 dependencies = [
-    "attrs~=24.3.0",
+    "attrs~=25.1.0",
     "python-gitlab>=4.9.0",
     "pyyaml~=6.0.1",
     "termcolor>=2.4.0",
