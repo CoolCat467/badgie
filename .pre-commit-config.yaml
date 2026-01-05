@@ -24,18 +24,18 @@ repos:
         files: .pre-commit-config.yaml
       - id: trailing-whitespace
   - repo: https://github.com/hadialqattan/pycln
-    rev: v2.5.0
+    rev: v2.6.0
     hooks:
       - id: pycln
         args: [--config=pyproject.toml, src]
         types: [file]
         types_or: [python, pyi]
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 25.9.0
+    rev: 25.12.0
     hooks:
       - id: black
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3
+    rev: v0.14.10
     hooks:
       - id: ruff
         types: [file]
@@ -51,6 +51,6 @@ repos:
         additional_dependencies:
           - tomli
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.3.0
+    rev: v4.5.1
     hooks:
       - id: validate_manifest
